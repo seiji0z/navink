@@ -1,11 +1,10 @@
 import React from "react";
-import logo from "./assets/navink-logo.png"; 
+import logo from "../assets/images/navink-logo.png";
 
 function Login() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-sky-50 to-rose-50">
       <div className="flex w-full max-w-3xl rounded-2xl bg-white shadow-md overflow-hidden">
-        
         <div className="flex flex-col justify-center w-1/2 px-10 py-12">
           <h2 className="text-lg font-semibold text-gray-800 mb-1">
             Welcome back!
@@ -87,4 +86,4 @@ function Login() {
   );
 }
 
-export default Login
+export default Login;

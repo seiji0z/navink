@@ -1,13 +1,11 @@
-import Login from "./Login"
+import Login from "./pages/Login";
 
 function App() {
-
-  return(
+  return (
     <>
-    <Login/>
+      <Login />
     </>
-  )
-
+  );
 }
 
-export default App
+export default App;
