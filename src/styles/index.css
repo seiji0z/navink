@@ -61,7 +61,7 @@
 }
 
 .fade-in {
-  opacity: 0; /* start hidden */
+  opacity: 0;
   animation: fadeIn 1s ease-out forwards;
 }
 
@@ -69,4 +69,8 @@
   opacity: 0;
   animation: fadeIn 1s ease-out forwards;
   animation-delay: 1s;
+}
+
+.cursor-dot {
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
 }
