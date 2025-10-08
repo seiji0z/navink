@@ -4,22 +4,16 @@ import logo from "../assets/images/navink-logo.png";
 function Login() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-sky-50 to-rose-50">
-<<<<<<< HEAD:src/pages/Login.jsx
-      <div className="flex w-full max-w-3xl rounded-2xl bg-white shadow-md overflow-hidden">
-        <div className="flex flex-col justify-center w-1/2 px-10 py-12">
-          <h2 className="text-lg font-semibold text-gray-800 mb-1">
-=======
       <div className="flex w-full max-w-3xl rounded-2xl bg-white border border-gray-200 shadow-md overflow-hidden">
         <div className="flex flex-col w-1/2 px-10 py-12">
-          <h2 
-            className="text-xl font-semibold text-gray-800 mb-1 text-center" 
+          <h2
+            className="text-xl font-semibold text-gray-800 mb-1 text-center"
             style={{ fontFamily: "Poppins, sans-serif" }}
           >
->>>>>>> 2eb9119384a22af011c138bb8add81ce61d5a0c6:src/Login.jsx
             Welcome back!
           </h2>
-          <p 
-            className="text-m text-gray-500 mb-8 text-center" 
+          <p
+            className="text-m text-gray-500 mb-8 text-center"
             style={{ fontFamily: "Poppins, sans-serif" }}
           >
             Log in to your account
