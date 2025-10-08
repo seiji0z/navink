@@ -3,7 +3,7 @@ import logo from "../assets/images/navink-logo.png";
 
 function Login() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-sky-50 to-rose-50">
+    <div className="fade-in flex min-h-screen items-center justify-center bg-gradient-to-b from-sky-200 to-rose-100">
       <div className="flex w-full max-w-3xl rounded-2xl bg-white border border-gray-200 shadow-md overflow-hidden">
         <div className="flex flex-col w-1/2 px-10 py-12">
           <h2
@@ -85,7 +85,10 @@ function Login() {
 
         <div className="hidden md:flex flex-col items-center justify-center w-1/2 bg-gradient-to-b from-sky-50 to-white">
           <img src={logo} alt="Navink Logo" className="w-64 mb-3" />
-          <h1 className="text-5xl font-semibold pb-7">
+          <h1
+            className="text-5xl font-semibold pb-7"
+            style={{ fontFamily: "Urbanist-Bold, sans-serif" }}
+          >
             Nav<span className="text-sky-700">ink</span>
           </h1>
         </div>
