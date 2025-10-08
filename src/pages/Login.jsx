@@ -4,12 +4,26 @@ import logo from "../assets/images/navink-logo.png";
 function Login() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-sky-50 to-rose-50">
+<<<<<<< HEAD:src/pages/Login.jsx
       <div className="flex w-full max-w-3xl rounded-2xl bg-white shadow-md overflow-hidden">
         <div className="flex flex-col justify-center w-1/2 px-10 py-12">
           <h2 className="text-lg font-semibold text-gray-800 mb-1">
+=======
+      <div className="flex w-full max-w-3xl rounded-2xl bg-white border border-gray-200 shadow-md overflow-hidden">
+        <div className="flex flex-col w-1/2 px-10 py-12">
+          <h2 
+            className="text-xl font-semibold text-gray-800 mb-1 text-center" 
+            style={{ fontFamily: "Poppins, sans-serif" }}
+          >
+>>>>>>> 2eb9119384a22af011c138bb8add81ce61d5a0c6:src/Login.jsx
             Welcome back!
           </h2>
-          <p className="text-sm text-gray-500 mb-8">Log in to your account</p>
+          <p 
+            className="text-m text-gray-500 mb-8 text-center" 
+            style={{ fontFamily: "Poppins, sans-serif" }}
+          >
+            Log in to your account
+          </p>
 
           <form className="space-y-5">
             <div>
@@ -50,7 +64,7 @@ function Login() {
 
             <button
               type="submit"
-              className="w-full bg-sky-700 text-white rounded-full py-2.5 font-medium hover:bg-sky-800 transition"
+              className="w-full bg-sky-700 text-white rounded-full py-2.5 -mb-0.5 font-medium hover:bg-sky-800 transition cursor-pointer"
             >
               Sign in
             </button>
@@ -63,7 +77,7 @@ function Login() {
 
             <button
               type="button"
-              className="w-full flex items-center justify-center border border-gray-300 rounded-full py-2.5 text-sm hover:bg-gray-50 transition"
+              className="w-full flex items-center justify-center border border-gray-300 rounded-full py-2.5 text-sm hover:bg-gray-50 transition cursor-pointer"
             >
               <img
                 src="https://www.svgrepo.com/show/475656/google-color.svg"
@@ -76,8 +90,8 @@ function Login() {
         </div>
 
         <div className="hidden md:flex flex-col items-center justify-center w-1/2 bg-gradient-to-b from-sky-50 to-white">
-          <img src={logo} alt="Navink Logo" className="w-64 mb-2" />
-          <h1 className="text-5xl font-semibold">
+          <img src={logo} alt="Navink Logo" className="w-64 mb-3" />
+          <h1 className="text-5xl font-semibold pb-7">
             Nav<span className="text-sky-700">ink</span>
           </h1>
         </div>
