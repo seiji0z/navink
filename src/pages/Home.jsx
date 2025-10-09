@@ -4,6 +4,10 @@ import dashboardIcon from "../assets/icons/dashboard-icon.png";
 import savedIcon from "../assets/icons/saved-files-icon.png";
 import printIcon from "../assets/icons/print-files-icon.png";
 import historyIcon from "../assets/icons/history-icon.png";
+import fileQueueIcon from "../assets/icons/file-queue-icon.png";
+import progressIcon from "../assets/icons/in-progress-icon.png";
+import pendingIcon from "../assets/icons/pending-icon.png";
+import declinedIcon from "../assets/icons/declined-icon.png";
 import logo from "../assets/images/navink-logo.png";
 
 function Sidebar() {
@@ -12,16 +16,16 @@ function Sidebar() {
   return (
     <div className="fade-in flex min-h-screen items-center justify-center bg-gradient-to-b from-sky-200 to-rose-100">
       <div>
-        <div className="flex items-center justify-center h-30">
+        <div className="flex items-center justify-center h-[8rem]">
           <img
             src={logo}
             alt="Logo"
-            className={`h-15 w-auto transition-all duration-300 pr-5 ${
+            className={`w-[70px] h-auto transition-all duration-300 pr-5 ${
               isOpen ? "opacity-100" : "opacity-100 pl-3"
             }`}
           />
           <h1
-            className={`font-bold text-base sm:text-lg md:text-2xl lg:text-4xl xl:text-4xl ${
+            className={`font-bold text-base sm:text-lg md:text-2xl lg:text-4xl xl:text-5xl ${
               isOpen ? "opacity-100" : "opacity-0"
             }`}
             style={{
@@ -84,31 +88,26 @@ function Sidebar() {
       </div>
 
       {/* Main content */}
-      <main className="flex-1 p-6 pr-5 pl-15 grid grid-cols-4 md:grid-cols-4 gap-5">
-        {/* Tokens Card */}
-        <div className="col-span-1 ">
-          <div className="w-90 h-90 rounded-full bg-white flex flex-col justify-center items-center shadow border-7 border-[#61C580]">
-            {" "}
+      <main className="flex-1 p-6 pr-5 pl-15 grid grid-cols-4 md:grid-cols-4 gap-2">
+        {/* Tokens */}
+        <div className="col-span-1">
+          <div className="w-[300px] h-[300px] rounded-full bg-white flex flex-col justify-center items-center shadow border-8 border-[#61C580]">
             <h3 className="text-2xl font-medium text-gray-500">
               Current Tokens
             </h3>
-            <p className="text-8xl font-bold text-green-600 mt-2 pb-5">
+            <p className="text-6xl font-bold text-green-600 mt-2 pb-5">
               450{" "}
               <span className="text-2xl font-normal text-gray-500">/ 500</span>
             </p>
-            <p className="text-1xl text-gray-400 mt-1 justify-center flex flex-col">
-              <span className="flex flex-col items-center justify-center">
-                Tokens will reset at the start
-              </span>
-              <span className="flex flex-col items-center justify-center">
-                of the next semester.
-              </span>
+            <p className="flex flex-col justify-center text-center text-gray-400 mt-1">
+              <span>Tokens will reset at the start</span>
+              <span> of the next semester</span>
             </p>
           </div>
         </div>
 
-        {/* Current Queues Card */}
-        <div className="bg-white rounded-xl p-6 shadow col-span-2">
+        {/* Current Queues */}
+        <div className="col-span-2 bg-white rounded-3xl p-6 shadow">
           <h3
             className="text-xl font-medium text-black-500 mb-4"
             style={{ fontFamily: "Poppins-SemiBold, sans-serif" }}
@@ -116,39 +115,90 @@ function Sidebar() {
             Current Queues
           </h3>
           <ul className="space-y-3">
-            <li className="flex justify-between items-center p-3 border rounded">
-              <span>toPrint.pdf</span>
-              <span className="text-green-500 font-semibold">35 Tokens</span>
-              <span className="text-sm px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
-                In Progress
-              </span>
+            <li className="flex items-center justify-between border-2 rounded-xl border-[#1F6D8B] p-2 gap-4 ">
+              {/* icon and file info */}
+              <div className="flex items-center gap-2">
+                <img src={fileQueueIcon} alt="" className="h-10 w-auto p-1" />
+                <div className="flex flex-col">
+                  <p className="font-medium">toPrint.pdf</p>
+                  <div className="text-sm text-gray-500 flex gap-1">
+                    <p>A4,</p>
+                    <p>5 copies,</p>
+                    <p>Black and White</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* tokens and queue number*/}
+              <div className="text-green-500 font-semibold">35 Tokens</div>
+              <div className="font-normal">1st in line</div>
+
+              {/* status */}
+              <div className="flex flex-row text-sm px-2 py-1 bg-[#00BBFF] text-black-700 rounded-lg items-center gap-2 w-[110px]">
+                <img src={progressIcon} alt="progress icon" className="h-4" />
+                <p>In Progress</p>
+              </div>
             </li>
-            <li className="flex justify-between items-center p-3 border rounded">
-              <span>IT313.pdf</span>
-              <span className="text-yellow-500 font-semibold">10 Tokens</span>
-              <span className="text-sm px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full">
-                Pending
-              </span>
+            <li className="flex items-center justify-between border-2 rounded-xl border-[#1F6D8B] p-2 gap-4">
+              {/* icon and file info */}
+              <div className="flex items-center gap-2">
+                <img src={fileQueueIcon} alt="" className="h-10 w-auto p-1" />
+                <div className="flex flex-col">
+                  <p className="font-medium">toPrint.pdf</p>
+                  <div className="text-sm text-gray-500 flex gap-1">
+                    <p>A4,</p>
+                    <p>5 copies,</p>
+                    <p>Black and White</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* tokens and queue number*/}
+              <div className="text-green-500 font-semibold">35 Tokens</div>
+              <div className="font-normal">2nd in line</div>
+
+              {/* status */}
+              <div className="flex flex-row text-sm px-2 py-1 bg-[#FF9D00] text-black-700 rounded-lg items-center justify-center gap-2 w-[110px]">
+                <img src={pendingIcon} alt="progress icon" className="h-4" />
+                <p>Pending</p>
+              </div>
             </li>
-            <li className="flex justify-between items-center p-3 border rounded">
-              <span>CFE101.pdf</span>
-              <span className="text-red-500 font-semibold">15 Tokens</span>
-              <span className="text-sm px-2 py-1 bg-red-100 text-red-700 rounded-full">
-                Declined
-              </span>
+            <li className="flex items-center justify-between border-2 rounded-xl border-[#1F6D8B] p-2 gap-4">
+              {/* icon and file info */}
+              <div className="flex items-center gap-2">
+                <img src={fileQueueIcon} alt="" className="h-10 w-auto p-1" />
+                <div className="flex flex-col">
+                  <p className="font-medium">toPrint.pdf</p>
+                  <div className="text-sm text-gray-500 flex gap-1">
+                    <p>A4,</p>
+                    <p>5 copies,</p>
+                    <p>Black and White</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* tokens and queue number*/}
+              <div className="text-green-500 font-semibold">35 Tokens</div>
+              <div className="font-normal">3rd in line</div>
+
+              {/* status */}
+              <div className="flex flex-row text-sm px-2 py-1 bg-[#FF4625] text-black-700 rounded-lg items-center justify-center gap-2 w-[110px]">
+                <img src={declinedIcon} alt="progress icon" className="h-4" />
+                <p>Declined</p>
+              </div>
             </li>
           </ul>
         </div>
 
         {/* Total Print Requests */}
-        <div className="bg-white rounded-xl p-6 shadow">
+        <div className="bg-white rounded-3xl p-6 shadow flex flex-col gap-10">
           <h3
             className="text-2xl font-medium text-gray-500"
             style={{ fontFamily: "Poppins-SemiBold, sans-serif" }}
           >
             Total Print Requests
           </h3>
-          <p className="text-4xl font-bold text-yellow-500 mt-2 flex flex-col items-center justify-center">
+          <p className="text-6xl font-bold text-yellow-500 mt-2 flex flex-col items-center justify-center">
             17
           </p>
         </div>
