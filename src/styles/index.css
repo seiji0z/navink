@@ -1,5 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* Font Families */
 
@@ -50,6 +52,15 @@
   }
 }
 
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 .fade-in-up {
   animation: fadeInUp 1s ease-out forwards;
 }
@@ -69,6 +80,11 @@
   opacity: 0;
   animation: fadeIn 1s ease-out forwards;
   animation-delay: 1s;
+}
+
+.animate-fadeOut {
+  animation: fadeOut 1s ease-out forwards;
+  animation-delay: 1.5s;
 }
 
 .cursor-dot {

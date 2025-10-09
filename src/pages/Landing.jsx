@@ -13,22 +13,22 @@ import yellowStar from "../assets/images/yellow-asterisk.png";
 
 function Landing() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-sky-200 to-rose-100">
+    <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-b from-sky-200 to-rose-100">
       {/* Images */}
       <img
         src={blueU}
         alt="Blue U"
-        className="animate-bounce absolute top-1/8 left-1/7 w-36 rotate-6"
+        className="animate-bounce absolute top-[12.5%] left-[14.28%] w-36 rotate-6"
       />
       <img
         src={greenSaw}
         alt="Green Saw"
-        className="slow-spin-rev absolute top-1/2 right-1/5 w-28 -rotate-12"
+        className="slow-spin-rev absolute top-1/2 right-[20%] w-28 -rotate-12"
       />
       <img
         src={pinkFlower}
         alt="Pink Flower"
-        className="animate-bounce absolute bottom-1/6 right-1/12 w-20 rotate-3"
+        className="animate-bounce absolute bottom-[16.66%] right-[8.33%] w-20 rotate-3"
       />
       <img
         src={orangeFlower}
@@ -38,12 +38,12 @@ function Landing() {
       <img
         src={yellowStar}
         alt="Yellow Star"
-        className="slow-spin-rev absolute bottom-1/2 left-1/30 w-24 rotate-12"
+        className="slow-spin-rev absolute bottom-1/2 left-[3.33%] w-24 rotate-12"
       />
       <img
         src={purpleBolt}
         alt="Purple Bolt"
-        className="slow-spin absolute bottom-1/12 left-1/4 w-15 -rotate-6"
+        className="slow-spin absolute bottom-[8.33%]] left-1/4 w-15 -rotate-6"
       />
 
       <div className="md:flex flex-col items-center justify-center">
@@ -78,7 +78,7 @@ function Landing() {
           </p>
         </div>
 
-        <div className="fade-in-delay  w-50 bg-sky-700 text-white rounded-full py-2.5 -mb-0.5 font-medium hover:bg-sky-800 transition cursor-pointer">
+        <div className="fade-in-delay w-48 md:w-64 bg-sky-700 text-white rounded-full py-2.5 -mb-0.5 font-medium text-[1.2rem] hover:bg-sky-800 transition cursor-pointer">
           <Link to="/login">
             <button type="submit" className="w-full">
               Start Printing
