@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import dashboardIcon from "../assets/icons/dashboard-icon.png";
 import savedIcon from "../assets/icons/saved-files-icon.png";
@@ -9,64 +10,123 @@ import progressIcon from "../assets/icons/in-progress-icon.png";
 import pendingIcon from "../assets/icons/pending-icon.png";
 import declinedIcon from "../assets/icons/declined-icon.png";
 import logo from "../assets/images/navink-logo.png";
+import profilePic from "../assets/images/gab.png"; 
 
 function Sidebar() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(true);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+    const handleLogout = () => {
+    // auth-related data  
+    // localStorage.removeItem("token");
+    // sessionStorage.clear();
+
+    navigate("/login");
+  };
 
   return (
     <div className="fade-in flex min-h-screen bg-sky-100">
       {/* Sidebar */}
       <aside
-        className={`relative text-white h-screen p-6 flex flex-col transition-all duration-300 ${
+        className={`relative text-white h-screen p-6 flex flex-col justify-between transition-all duration-300 bg-navi ${
           isOpen ? "w-64" : "w-20"
         }`}
         style={{
-          backgroundColor: "#1F6D8B",
           borderTopRightRadius: "50px",
           borderBottomRightRadius: "50px",
           fontFamily: "Poppins-Regular, sans-serif",
         }}
       >
-        {/* Logo + Title */}
-        <div className="flex items-center mb-8">
-          <img
-            src={logo}
-            alt="Logo"
-            className={`w-[50px] h-auto transition-all duration-300 ${
-              isOpen ? "mr-3" : "mx-auto"
-            }`}
-          />
-          <h1
-            className={`font-bold text-2xl transition-opacity duration-300 ${
-              isOpen ? "opacity-100" : "opacity-0"
-            }`}
-            style={{ fontFamily: "Urbanist-Bold, sans-serif" }}
-          >
-            Nav<span className="text-sky-300">ink</span>
-          </h1>
+        {/* Top Section */}
+        <div>
+          {/* Logo + Title */}
+          <div className="flex items-center mb-8">
+            <img
+              src={logo}
+              alt="Logo"
+              className={`w-[50px] h-auto transition-all duration-300 ${
+                isOpen ? "mr-3" : "mx-auto"
+              }`}
+            />
+            <h1
+              className={`font-bold text-2xl transition-opacity duration-300 ${
+                isOpen ? "opacity-100" : "opacity-0"
+              }`}
+              style={{ fontFamily: "Urbanist-Bold, sans-serif" }}
+            >
+              Nav<span className="text-sky-300">ink</span>
+            </h1>
+          </div>
+
+          {/* Navigation */}
+          <nav className="flex-1">
+            <ul className="space-y-4">
+              <li className="flex items-center hover:text-sky-300 cursor-pointer">
+                <img src={dashboardIcon} alt="Dashboard" className="w-6 h-6 mr-2" />
+                {isOpen && "Dashboard"}
+              </li>
+              <li className="flex items-center hover:text-sky-300 cursor-pointer">
+                <img src={savedIcon} alt="Saved Files" className="w-6 h-6 mr-2" />
+                {isOpen && "Saved Files"}
+              </li>
+              <li className="flex items-center hover:text-sky-300 cursor-pointer">
+                <img src={printIcon} alt="Print Files" className="w-6 h-6 mr-2" />
+                {isOpen && "Print Files"}
+              </li>
+              <li className="flex items-center hover:text-sky-300 cursor-pointer">
+                <img src={historyIcon} alt="History" className="w-6 h-6 mr-2" />
+                {isOpen && "History"}
+              </li>
+            </ul>
+          </nav>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1">
-          <ul className="space-y-4">
-            <li className="flex items-center hover:text-sky-300 cursor-pointer">
-              <img src={dashboardIcon} alt="Dashboard" className="w-6 h-6 mr-2" />
-              {isOpen && "Dashboard"}
-            </li>
-            <li className="flex items-center hover:text-sky-300 cursor-pointer">
-              <img src={savedIcon} alt="Saved Files" className="w-6 h-6 mr-2" />
-              {isOpen && "Saved Files"}
-            </li>
-            <li className="flex items-center hover:text-sky-300 cursor-pointer">
-              <img src={printIcon} alt="Print Files" className="w-6 h-6 mr-2" />
-              {isOpen && "Print Files"}
-            </li>
-            <li className="flex items-center hover:text-sky-300 cursor-pointer">
-              <img src={historyIcon} alt="History" className="w-6 h-6 mr-2" />
-              {isOpen && "History"}
-            </li>
-          </ul>
-        </nav>
+        {/* Profile Section/Bottom */}
+        <div className="relative mt-auto">
+          <div
+            className={`flex items-center cursor-pointer p-2 rounded-xl hover:bg-sky-200/20 transition-all duration-300 ${
+              isOpen ? "justify-start" : "justify-center"
+            }`}
+            onClick={() => setShowProfileMenu(!showProfileMenu)}
+          >
+            <div className="flex-shrink-0 w-10 h-10">
+                  <img
+                    src={profilePic}
+                    alt="Profile"
+                    className="w-10 h-10 rounded-full border-2 border-white object-cover"
+                  />
+                </div>
+
+                {/* name/email */}
+                {isOpen && (
+                  <div className="ml-3 overflow-hidden">
+                    <p className="font-semibold text-white leading-tight">Gabriel Flores</p>
+                    <p className="text-xs text-gray-300 leading-tight">2240853@slu.edu.ph</p>
+                  </div>
+                )}
+              </div>
+
+          {/* Dropdown Menu */}
+          {showProfileMenu && (
+            <div
+              className={`absolute bottom-16 left-0 bg-white text-gray-700 rounded-xl shadow-lg transition-all ${
+                isOpen ? "w-full" : "w-40 left-12"
+              }`}
+            >
+              <ul className="py-2">
+                <li className="px-4 py-2 hover:bg-sky-100 cursor-pointer">
+                  View Profile
+                </li>
+                <li 
+                  className="px-4 py-2 hover:bg-sky-100 cursor-pointer"
+                  onClick={handleLogout}
+                >
+                  Log Out
+                </li>
+              </ul>
+            </div>
+          )}
+        </div>
 
         {/* Collapse/Expand Button */}
         <button
