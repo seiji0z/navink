@@ -14,10 +14,11 @@ import yellowStar from "../assets/images/yellow-asterisk.png";
 function Landing() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-sky-200 to-rose-100">
+      {/* Images */}
       <img
         src={blueU}
         alt="Blue U"
-        className="slow-spin absolute top-1/8 left-1/7 w-36 rotate-6"
+        className="animate-bounce absolute top-1/8 left-1/7 w-36 rotate-6"
       />
       <img
         src={greenSaw}
@@ -27,22 +28,22 @@ function Landing() {
       <img
         src={pinkFlower}
         alt="Pink Flower"
-        className="slow-spin absolute bottom-1/6 right-1/12 w-20 rotate-3"
+        className="animate-bounce absolute bottom-1/6 right-1/12 w-20 rotate-3"
       />
       <img
         src={orangeFlower}
         alt="Orange Flower"
-        className="slow-spin absolute top-10 right-20 w-24 rotate-12"
+        className="slow-spin-rev absolute top-10 right-20 w-24 rotate-12"
       />
       <img
         src={yellowStar}
         alt="Yellow Star"
-        className="slow-spin absolute bottom-1/2 left-1/30 w-24 rotate-12"
+        className="slow-spin-rev absolute bottom-1/2 left-1/30 w-24 rotate-12"
       />
       <img
         src={purpleBolt}
         alt="Purple Bolt"
-        className="slow-spin-rev absolute bottom-1/12 left-1/4 w-10 -rotate-6"
+        className="slow-spin absolute bottom-1/12 left-1/4 w-15 -rotate-6"
       />
 
       <div className="md:flex flex-col items-center justify-center">

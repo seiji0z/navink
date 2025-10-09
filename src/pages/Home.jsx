@@ -87,7 +87,7 @@ function Sidebar() {
       <main className="flex-1 p-6 pr-5 pl-15 grid grid-cols-4 md:grid-cols-4 gap-5">
         {/* Tokens Card */}
         <div className="col-span-1 ">
-          <div className="w-90 h-90 rounded-full bg-white flex flex-col justify-center items-center shadow border-7 border-green-500">
+          <div className="w-90 h-90 rounded-full bg-white flex flex-col justify-center items-center shadow border-7 border-[#61C580]">
             {" "}
             <h3 className="text-2xl font-medium text-gray-500">
               Current Tokens
