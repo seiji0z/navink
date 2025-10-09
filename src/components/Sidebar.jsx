@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import dashboardIcon from "../assets/icons/dashboard-icon.png";
 import savedIcon from "../assets/icons/saved-files-icon.png";
@@ -10,6 +10,7 @@ import profilePic from "../assets/images/gab.png";
 
 function Sidebar({ isOpen, setIsOpen }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   const handleLogout = () => {
@@ -17,6 +18,8 @@ function Sidebar({ isOpen, setIsOpen }) {
     // sessionStorage.clear();
     navigate("/login");
   };
+
+  const isActive = (path) => location.pathname === path;
 
   return (
     <aside
@@ -52,19 +55,54 @@ function Sidebar({ isOpen, setIsOpen }) {
         {/* Navigation */}
         <nav className="flex-1">
           <ul className="space-y-4">
-            <li className="flex items-center hover:text-sky-300 cursor-pointer">
+            {/* Dashboard */}
+            <li
+              onClick={() => navigate("/home")}
+              className={`flex items-center cursor-pointer transition-colors ${
+                isActive("/home")
+                  ? "text-white font-bold"
+                  : "hover:text-sky-300"
+              }`}
+            >
               <img src={dashboardIcon} alt="Dashboard" className="w-6 h-6 mr-2" />
               {isOpen && "Dashboard"}
             </li>
-            <li className="flex items-center hover:text-sky-300 cursor-pointer">
+
+            {/* Saved Files */}
+            <li
+              onClick={() => navigate("/saved-files")}
+              className={`flex items-center cursor-pointer transition-colors ${
+                isActive("/saved-files")
+                  ? "text-white font-bold"
+                  : "hover:text-sky-300"
+              }`}
+            >
               <img src={savedIcon} alt="Saved Files" className="w-6 h-6 mr-2" />
               {isOpen && "Saved Files"}
             </li>
-            <li className="flex items-center hover:text-sky-300 cursor-pointer">
+
+            {/* Print Files */}
+            <li
+              onClick={() => navigate("/print-files")}
+              className={`flex items-center cursor-pointer transition-colors ${
+                isActive("/print-files")
+                  ? "text-white font-bold"
+                  : "hover:text-sky-300"
+              }`}
+            >
               <img src={printIcon} alt="Print Files" className="w-6 h-6 mr-2" />
               {isOpen && "Print Files"}
             </li>
-            <li className="flex items-center hover:text-sky-300 cursor-pointer">
+
+            {/* History */}
+            <li
+              onClick={() => navigate("/history")}
+              className={`flex items-center cursor-pointer transition-colors ${
+                isActive("/history")
+                  ? "text-white font-bold"
+                  : "hover:text-sky-300"
+              }`}
+            >
               <img src={historyIcon} alt="History" className="w-6 h-6 mr-2" />
               {isOpen && "History"}
             </li>
@@ -89,8 +127,12 @@ function Sidebar({ isOpen, setIsOpen }) {
           </div>
           {isOpen && (
             <div className="ml-3 overflow-hidden">
-              <p className="font-semibold text-white leading-tight">Gabriel Flores</p>
-              <p className="text-xs text-gray-300 leading-tight">2240853@slu.edu.ph</p>
+              <p className="font-semibold text-white leading-tight">
+                Gabriel Flores
+              </p>
+              <p className="text-xs text-gray-300 leading-tight">
+                2240853@slu.edu.ph
+              </p>
             </div>
           )}
         </div>
@@ -102,8 +144,13 @@ function Sidebar({ isOpen, setIsOpen }) {
             } bg-white text-gray-700 rounded-xl shadow-lg transition-all`}
           >
             <ul className="py-2">
-              <li className="px-4 py-2 hover:bg-sky-100 cursor-pointer">View Profile</li>
-              <li className="px-4 py-2 hover:bg-sky-100 cursor-pointer" onClick={handleLogout}>
+              <li className="px-4 py-2 hover:bg-sky-100 cursor-pointer">
+                View Profile
+              </li>
+              <li
+                className="px-4 py-2 hover:bg-sky-100 cursor-pointer"
+                onClick={handleLogout}
+              >
                 Log Out
               </li>
             </ul>

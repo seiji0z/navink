@@ -2,6 +2,8 @@ import Splash from "./components/Splash";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
+import SavedFilePage from "./pages/SavedFilePage";
+import HistoryPage from "./pages/HistoryPage";
 import SmoothFollower from "./components/SmoothFollower";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -23,6 +25,8 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/saved-files" element={<SavedFilePage />} />
+        <Route path="/history" element={<HistoryPage />} />
       </Routes>
     </BrowserRouter>
   );
