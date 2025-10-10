@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import SavedFilePage from "./pages/SavedFilePage";
 import HistoryPage from "./pages/HistoryPage";
 import SmoothFollower from "./components/SmoothFollower";
+import PrintFiles from "./pages/PrintFiles";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
 
@@ -27,6 +28,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/saved-files" element={<SavedFilePage />} />
         <Route path="/history" element={<HistoryPage />} />
+        <Route path="/print-files" element={<PrintFiles />} /> {}
       </Routes>
     </BrowserRouter>
   );
