@@ -8,7 +8,9 @@ const StepReviewConfirm = ({ onBack, data }) => {
     if (!data) return;
 
     const copies = parseInt(data.copies || 1);
-    const isImagePrint = data.isImagePrint === true; // passed from previous step
+    const totalPages = parseInt(data.totalPages || 1);
+    const isImagePrint = data.isImagePrint === true;
+
     let tokensPerPage = 0;
 
     // === TOKEN COMPUTATION BASED ON POLICY ===
@@ -18,9 +20,7 @@ const StepReviewConfirm = ({ onBack, data }) => {
       tokensPerPage = isImagePrint ? 15 : 10;
     }
 
-    // Assume 1 page unless print range/page count data is added
-    const tokens = tokensPerPage * copies;
-
+    const tokens = tokensPerPage * copies * totalPages;
     setTokensUsed(tokens);
   }, [data]);
 
@@ -39,6 +39,9 @@ const StepReviewConfirm = ({ onBack, data }) => {
         </p>
         <p>
           <strong>Copies:</strong> {data.copies || "1"}
+        </p>
+        <p>
+          <strong>Pages:</strong> {data.totalPages || "1"}
         </p>
         <p>
           <strong>Paper Size:</strong> {data.paperSize || "Short 8.5 x 11"}

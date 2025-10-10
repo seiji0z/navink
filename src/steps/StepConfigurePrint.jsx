@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const StepConfigurePrint = ({ onNext, onBack }) => {
+const StepConfigurePrint = ({ onNext, onBack, data }) => {
   const [copies, setCopies] = useState(1);
   const [paperSize, setPaperSize] = useState("Short 8.5 x 11");
   const [colorMode, setColorMode] = useState("Black & White");
@@ -8,18 +8,50 @@ const StepConfigurePrint = ({ onNext, onBack }) => {
   const [customRange, setCustomRange] = useState("");
   const [printOption, setPrintOption] = useState("now");
   const [printDate, setPrintDate] = useState("");
+  const [totalPages, setTotalPages] = useState(1);
+  const [rangeError, setRangeError] = useState("");
+
+  // Simulate total pages from uploaded file (in real case, extract using pdf.js or server)
+  useEffect(() => {
+    if (data?.file && data.file.totalPages) {
+      setTotalPages(data.file.totalPages);
+    } else {
+      setTotalPages(10); // fallback demo value
+    }
+  }, [data]);
+
+  const validateRange = (rangeStr) => {
+    const ranges = rangeStr.split(",").map((r) => r.trim());
+    for (let r of ranges) {
+      if (r.includes("-")) {
+        const [start, end] = r.split("-").map(Number);
+        if (isNaN(start) || isNaN(end) || start < 1 || end > totalPages || start > end)
+          return false;
+      } else {
+        const page = Number(r);
+        if (isNaN(page) || page < 1 || page > totalPages) return false;
+      }
+    }
+    return true;
+  };
 
   const handleNext = () => {
+    if (printRangeOption === "Select Pages" && !validateRange(customRange)) {
+      setRangeError(`Invalid range. Must be within 1–${totalPages}.`);
+      return;
+    }
+
     const config = {
       copies,
       paperSize,
       colorMode,
       printRange:
         printRangeOption === "All Pages"
-          ? "All Pages"
-          : customRange || "All Pages",
+          ? `All Pages (${totalPages} pages)`
+          : customRange,
       printOption,
       printDate,
+      totalPages,
     };
     onNext(config);
   };
@@ -72,14 +104,19 @@ const StepConfigurePrint = ({ onNext, onBack }) => {
 
         {/* Print Range */}
         <div>
-          <label className="block font-medium text-gray-700">Print Range:</label>
+          <label className="block font-medium text-gray-700">
+            Print Range: (Total Pages: {totalPages})
+          </label>
           <div className="flex items-center space-x-4 mt-1">
             <label className="flex items-center space-x-2">
               <input
                 type="radio"
                 value="All Pages"
                 checked={printRangeOption === "All Pages"}
-                onChange={() => setPrintRangeOption("All Pages")}
+                onChange={() => {
+                  setPrintRangeOption("All Pages");
+                  setRangeError("");
+                }}
               />
               <span>All Pages</span>
             </label>
@@ -96,13 +133,18 @@ const StepConfigurePrint = ({ onNext, onBack }) => {
           </div>
 
           {printRangeOption === "Select Pages" && (
-            <input
-              type="text"
-              placeholder="e.g. 1-3, 5, 7"
-              value={customRange}
-              onChange={(e) => setCustomRange(e.target.value)}
-              className="w-full mt-3 p-2 border rounded-lg"
-            />
+            <>
+              <input
+                type="text"
+                placeholder="e.g. 1-3, 5, 7"
+                value={customRange}
+                onChange={(e) => setCustomRange(e.target.value)}
+                className="w-full mt-3 p-2 border rounded-lg"
+              />
+              {rangeError && (
+                <p className="text-red-500 text-sm mt-1">{rangeError}</p>
+              )}
+            </>
           )}
         </div>
 
