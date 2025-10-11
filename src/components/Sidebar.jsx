@@ -68,19 +68,6 @@ function Sidebar({ isOpen, setIsOpen }) {
               {isOpen && "Dashboard"}
             </li>
 
-            {/* Saved Files */}
-            <li
-              onClick={() => navigate("/saved-files")}
-              className={`flex items-center cursor-pointer transition-colors ${
-                isActive("/saved-files")
-                  ? "text-white font-bold"
-                  : "hover:text-sky-300"
-              }`}
-            >
-              <img src={savedIcon} alt="Saved Files" className="w-6 h-6 mr-2" />
-              {isOpen && "Saved Files"}
-            </li>
-
             {/* Print Files */}
             <li
               onClick={() => navigate("/print-files")}
@@ -106,6 +93,20 @@ function Sidebar({ isOpen, setIsOpen }) {
               <img src={historyIcon} alt="History" className="w-6 h-6 mr-2" />
               {isOpen && "History"}
             </li>
+
+            {/* Policies */}
+            <li
+              onClick={() => navigate("/policies")}
+              className={`flex items-center cursor-pointer transition-colors ${
+                isActive("/saved-files")
+                  ? "text-white font-bold"
+                  : "hover:text-sky-300"
+              }`}
+            >
+              <img src={savedIcon} alt="Policies" className="w-6 h-6 mr-2" />
+              {isOpen && "Policies"}
+            </li>
+
           </ul>
         </nav>
       </div>

@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Tokens from "../components/dashboard/Tokens";
 import CurrentQueues from "../components/dashboard/CurrentQueues";
-import TotalPrintRequests from "../components/dashboard/TotalPrintRequests";
-import SavedFiles from "../components/dashboard/SavedFiles";
+import Notifications from "../components/dashboard/Notifications";
 import PrintHistory from "../components/dashboard/PrintHistory";
+import PoliciesCard from "../components/dashboard/PoliciesCard";
 
 function Home() {
   const [isOpen, setIsOpen] = useState(true);
@@ -23,8 +23,8 @@ function Home() {
         <div className="grid grid-cols-4 gap-2 flex-1 overflow-y-auto">
           <Tokens />
           <CurrentQueues />
-          <TotalPrintRequests />
-          <SavedFiles />
+          <Notifications />
+          <PoliciesCard />
           <PrintHistory />
         </div>
       </main>

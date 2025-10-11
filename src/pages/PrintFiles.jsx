@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Stepper from "../components/Stepper";
-import StepUploadPreview from "../steps/StepUploadPreview";
-import StepConfigurePrint from "../steps/StepConfigurePrint";
-import StepReviewConfirm from "../steps/StepReviewConfirm";
+import StepUploadPreview from "../components/steps/StepUploadPreview";
+import StepConfigurePrint from "../components/steps/StepConfigurePrint";
+import StepReviewConfirm from "../components/steps/StepReviewConfirm";
 
 export default function PrintFiles() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);

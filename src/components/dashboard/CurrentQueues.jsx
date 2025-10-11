@@ -8,7 +8,7 @@ function CurrentQueues() {
   return (
     <div className="col-span-2 bg-white rounded-3xl p-6 shadow">
       <h3
-        className="text-xl font-medium text-black-500 mb-4"
+        className="text-xl font-medium text-gray-500 mb-4"
         style={{ fontFamily: "Poppins-SemiBold, sans-serif" }}
       >
         Current Queues
@@ -20,10 +20,10 @@ function CurrentQueues() {
           <div className="flex items-center gap-2">
             <img src={fileQueueIcon} alt="" className="h-10 w-auto p-1" />
             <div>
-              <p className="font-medium">toPrint.pdf</p>
+              <p className="font-medium">research.pdf</p>
               <div className="text-sm text-gray-500 flex gap-1">
                 <p>A4,</p>
-                <p>5 copies,</p>
+                <p>2 copies,</p>
                 <p>Black and White</p>
               </div>
             </div>
@@ -66,10 +66,10 @@ function CurrentQueues() {
           <div className="flex items-center gap-2">
             <img src={fileQueueIcon} alt="" className="h-10 w-auto p-1" />
             <div>
-              <p className="font-medium">toPrint.pdf</p>
+              <p className="font-medium">PEER_EVALLLL.pdf</p>
               <div className="text-sm text-gray-500 flex gap-1">
                 <p>A4,</p>
-                <p>5 copies,</p>
+                <p>1 copy,</p>
                 <p>Black and White</p>
               </div>
             </div>

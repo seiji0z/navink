@@ -29,10 +29,10 @@ export default function Splash({ onFinish }) {
       ref={splashRef} //variable to reference the whole div here
       className="fixed inset-0 flex flex-col items-center justify-center bg-white z-50 animate-fadeOut"
     >
-      <div className="flex">
+      <div className="flex relative -translate-y-[2%]">
         <SplitText
           text="Nav"
-          className="text-[20rem] font-bold text-center"
+          className="text-[18rem] font-bold text-center"
           fontFamily="Urbanist-Bold, sans-serif"
           delay={100}
           duration={0.6}
@@ -43,7 +43,7 @@ export default function Splash({ onFinish }) {
         />
         <SplitText
           text="ink"
-          className="text-[20rem] font-bold text-center text-[#1F6D8B]"
+          className="text-[18rem] font-bold text-center text-[#1F6D8B]"
           fontFamily="Urbanist-Bold, sans-serif"
           delay={200}
           duration={0.6}
