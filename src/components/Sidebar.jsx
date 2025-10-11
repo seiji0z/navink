@@ -144,7 +144,13 @@ function Sidebar({ isOpen, setIsOpen }) {
             } bg-white text-gray-700 rounded-xl shadow-lg transition-all`}
           >
             <ul className="py-2">
-              <li className="px-4 py-2 hover:bg-sky-100 cursor-pointer">
+              <li
+                className="px-4 py-2 hover:bg-sky-100 cursor-pointer"
+                onClick={() => {
+                  navigate("/profile"); 
+                  setShowProfileMenu(false);
+                }}
+              >
                 View Profile
               </li>
               <li
