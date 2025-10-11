@@ -20,12 +20,11 @@ export default function ProfileCard({ password, setPassword }) {
           <div>
             <h3 className="text-2xl font-semibold text-gray-800">Gabriel Flores</h3>
             <p className="text-sm text-gray-600">2240853@slu.edu.ph</p>
-            <p className="text-sm text-gray-500 mt-2">Bachelor of Science in Information Technology • Third Year</p>
+            <p className="text-sm text-gray-500 mt-2">BSIT • Third Year</p>
           </div>
         </div>
 
         <div className="hidden md:flex items-center gap-4">
-          <button className="px-4 py-2 bg-white border border-gray-200 rounded-lg hover:shadow">Message</button>
           <button className="px-4 py-2 bg-navi text-white rounded-lg hover:bg-sky-700 whitespace-nowrap">Edit Profile</button>
         </div>
       </div>
@@ -39,7 +38,7 @@ export default function ProfileCard({ password, setPassword }) {
           </div>
           <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
             <p className="text-sm text-gray-500">Course</p>
-            <p className="font-medium text-gray-800">BSIT</p>
+            <p className="font-medium text-gray-800">Bachelor of Science in Information Technology</p>
           </div>
         </div>
 
