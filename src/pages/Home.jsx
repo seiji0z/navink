@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
-import Tokens from "../components/dashboard/Tokens";
-import CurrentQueues from "../components/dashboard/CurrentQueues";
-import Notifications from "../components/dashboard/Notifications";
-import PrintHistory from "../components/dashboard/PrintHistory";
+import Tokens from "../components/dashboard/TokensCard";
+import CurrentQueues from "../components/dashboard/CurrentQueuesCard";
+import Notifications from "../components/dashboard/NotificationsCard";
+import PrintHistory from "../components/dashboard/PrintHistoryCard";
 import PoliciesCard from "../components/dashboard/PoliciesCard";
 import PrintButton from "../components/dashboard/PrintButton";
 
