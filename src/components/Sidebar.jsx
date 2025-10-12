@@ -98,7 +98,7 @@ function Sidebar({ isOpen, setIsOpen }) {
             <li
               onClick={() => navigate("/policies")}
               className={`flex items-center cursor-pointer transition-colors ${
-                isActive("/saved-files")
+                isActive("/policies")
                   ? "text-white font-bold"
                   : "hover:text-sky-300"
               }`}
