@@ -67,7 +67,7 @@ function HistoryPage() {
                   placeholder="Search by File Name or File ID"
                   className="flex-1 px-4 py-2 text-gray-700 focus:outline-none"
                 />
-                <button className="bg-sky-500 hover:bg-sky-600 flex items-center justify-center px-4">
+                <button className="bg-[#1F6D8B] hover:bg-sky-600 flex items-center justify-center px-4">
                   <img src={searchIcon} alt="Search" className="w-4 h-4" />
                 </button>
               </div>

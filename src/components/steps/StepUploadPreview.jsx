@@ -100,7 +100,7 @@ const StepUploadPreview = ({ onNext }) => {
         />
         <label
           htmlFor="fileUpload"
-          className="cursor-pointer bg-sky-500 hover:bg-sky-600 text-white px-5 py-2 rounded-md transition"
+          className="cursor-pointer bg-[#1F6D8B] hover:bg-sky-600 text-white px-5 py-2 rounded-md transition"
         >
           Choose File
         </label>

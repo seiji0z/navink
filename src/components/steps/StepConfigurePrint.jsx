@@ -25,7 +25,13 @@ const StepConfigurePrint = ({ onNext, onBack, data }) => {
     for (let r of ranges) {
       if (r.includes("-")) {
         const [start, end] = r.split("-").map(Number);
-        if (isNaN(start) || isNaN(end) || start < 1 || end > totalPages || start > end)
+        if (
+          isNaN(start) ||
+          isNaN(end) ||
+          start < 1 ||
+          end > totalPages ||
+          start > end
+        )
           return false;
       } else {
         const page = Number(r);
@@ -152,7 +158,7 @@ const StepConfigurePrint = ({ onNext, onBack, data }) => {
         <div>
           <label className="block font-medium text-gray-700">Print Date:</label>
           <div className="flex items-center space-x-4 mt-1">
-            <label className="flex items-center space-x-2">
+            <label className="flex items-center space-x-2 ">
               <input
                 type="radio"
                 value="now"
@@ -194,7 +200,7 @@ const StepConfigurePrint = ({ onNext, onBack, data }) => {
         </button>
         <button
           onClick={handleNext}
-          className="px-6 py-2 rounded-lg bg-sky-500 hover:bg-sky-600 text-white transition"
+          className="px-6 py-2 rounded-lg bg-[#1F6D8B] hover:bg-sky-600 text-white transition"
         >
           Next
         </button>

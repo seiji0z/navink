@@ -10,20 +10,55 @@ function Notifications() {
         Notifications
       </h3>
 
-      <div className="flex flex-col gap-4 text-gray-700">
-        <div className="border rounded-xl p-4 bg-gray-50 shadow-sm">
-          <p className="text-sm">
-            <span className="text-navi"><b>toPrint.pdf</b></span> is now <span className="text-green-600">ready for pick up</span> at the{" "}
-            <b>BYOD Lab</b>. Please bring replacement papers.
-          </p>
-        </div>
+      {/* Scrollable area */}
+      <ul className="flex flex-col gap-3 max-h-60 overflow-y-auto pr-2">
+        <li>
+          <div className="border rounded-xl p-4 bg-gray-50 shadow-sm">
+            <p className="text-sm">
+              <span className="text-navi">
+                <b>toPrint.pdf</b>
+              </span>{" "}
+              is now <span className="text-green-600">ready for pick up</span>{" "}
+              at the <b>BYOD Lab</b>. Please bring replacement papers.
+            </p>
+          </div>
+        </li>
+        <li>
+          <div className="border rounded-xl p-4 bg-gray-50 shadow-sm">
+            <p className="text-sm">
+              <span className="text-navi">
+                <b>toPrint.pdf</b>
+              </span>{" "}
+              is now <span className="text-green-600">ready for pick up</span>{" "}
+              at the <b>BYOD Lab</b>. Please bring replacement papers.
+            </p>
+          </div>
+        </li>
+        <li>
+          <div className="border rounded-xl p-4 bg-gray-50 shadow-sm">
+            <p className="text-sm">
+              <span className="text-navi">
+                <b>toPrint.pdf</b>
+              </span>{" "}
+              is now <span className="text-green-600">ready for pick up</span>{" "}
+              at the <b>BYOD Lab</b>. Please bring replacement papers.
+            </p>
+          </div>
+        </li>
+        <li>
+          <div className="border rounded-xl p-4 bg-gray-50 shadow-sm">
+            <p className="text-sm">
+              <span className="text-navi">
+                <b>toPrint.pdf</b>
+              </span>{" "}
+              is now <span className="text-green-600">ready for pick up</span>{" "}
+              at the <b>BYOD Lab</b>. Please bring replacement papers.
+            </p>
+          </div>
+        </li>
+      </ul>
 
-        <div className="border rounded-xl p-4 bg-gray-50 shadow-sm">
-          <p className="text-sm">
-            <span className="text-navi"><b>research.pdf</b></span> is <span className="text-yellow-600">queued for printing</span>. You will be notified once it's ready.
-          </p>
-        </div>
-      </div>
+      <div className=" text-gray-700"></div>
     </div>
   );
 }
