@@ -10,6 +10,9 @@ import Profile from "./pages/Profile";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
 
+// Admin pages
+import AdminHome from "./admin/pages/AdminHome";
+
 function App() {
   const [showSplash, setShowSplash] = useState(true);
 
@@ -24,6 +27,7 @@ function App() {
     <BrowserRouter>
       <SmoothFollower />
       <Routes>
+        {/* ---------------- STUDENT SIDE ---------------- */}
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />
@@ -31,6 +35,9 @@ function App() {
         <Route path="/print-files" element={<PrintFiles />} />
         <Route path="/policies" element={<Policies />} />
         <Route path="/profile" element={<Profile />} />
+
+        {/* ---------------- ADMIN SIDE ---------------- */}
+        <Route path="/admin/home" element={<AdminHome />} />
       </Routes>
     </BrowserRouter>
   );

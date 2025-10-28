@@ -10,9 +10,15 @@ function Login() {
     navigate("/home");
   };
 
+  // ✅ Updated route to match App.jsx
+  const handleLogoClick = () => {
+    navigate("/admin/home");
+  };
+
   return (
     <div className="fade-in flex min-h-screen items-center justify-center bg-gradient-to-b from-sky-200 to-rose-100">
       <div className="flex w-full max-w-3xl rounded-2xl bg-white border border-gray-200 shadow-md overflow-hidden">
+        {/* Left side - Login form */}
         <div className="flex flex-col w-1/2 px-10 py-12">
           <h2
             className="text-xl font-semibold text-gray-800 mb-1 text-center"
@@ -91,10 +97,18 @@ function Login() {
           </button>
         </div>
 
+        {/* Right side - Logo and name */}
         <div className="hidden md:flex flex-col items-center justify-center w-1/2 bg-gradient-to-b from-sky-50 to-white">
-          <img src={logo} alt="Navink Logo" className="w-64 mb-3" />
+          {/* Make logo navigate to Admin Dashboard */}
+          <img
+            src={logo}
+            alt="Navink Logo"
+            className="w-64 mb-3 cursor-pointer transition-transform hover:scale-105"
+            onClick={handleLogoClick}
+            title="Go to Admin Dashboard"
+          />
           <h1
-            className="text-5xl font-semibold pb-7"
+            className="text-5xl font-semibold pb-7 select-none"
             style={{ fontFamily: "Urbanist-Bold, sans-serif" }}
           >
             Nav<span className="text-sky-700">ink</span>
