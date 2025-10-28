@@ -15,6 +15,7 @@ import AdminHome from "./admin/pages/AdminHome";
 import Request from "./admin/pages/Request";
 import PrintRequest from "./admin/components/PrintRequest";
 import Queue from "./admin/pages/Queue";
+import Usage from "./admin/pages/Usage";
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -44,6 +45,7 @@ function App() {
         <Route path="/admin/requests" element={<Request />} />
         <Route path="/print-request/:id" element={<PrintRequest />} />
         <Route path="/admin/queue" element={<Queue />} />
+        <Route path="/admin/usage" element={<Usage />} />
 
       </Routes>
     </BrowserRouter>

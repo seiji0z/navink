@@ -61,7 +61,7 @@ function AdminSidebar({ isOpen, setIsOpen }) {
             <li
               onClick={() => navigate("/admin/home")}
               className={`flex items-center cursor-pointer transition-colors ${
-                isActive("/admin/admin-home")
+                isActive("/admin/home")
                   ? "text-white font-bold"
                   : "hover:text-sky-300"
               }`}
@@ -74,7 +74,7 @@ function AdminSidebar({ isOpen, setIsOpen }) {
             <li
               onClick={() => navigate("/admin/requests")}
               className={`flex items-center cursor-pointer transition-colors ${
-                isActive("/admin/print-requests")
+                isActive("/admin/requests")
                   ? "text-white font-bold"
                   : "hover:text-sky-300"
               }`}
@@ -87,7 +87,7 @@ function AdminSidebar({ isOpen, setIsOpen }) {
             <li
               onClick={() => navigate("/admin/queue")}
               className={`flex items-center cursor-pointer transition-colors ${
-                isActive("/admin/print-queue")
+                isActive("/admin/queue")
                   ? "text-white font-bold"
                   : "hover:text-sky-300"
               }`}
@@ -98,9 +98,9 @@ function AdminSidebar({ isOpen, setIsOpen }) {
 
             {/* Usage & Activity */}
             <li
-              onClick={() => navigate("/admin/usage-activity")}
+              onClick={() => navigate("/admin/usage")}
               className={`flex items-center cursor-pointer transition-colors ${
-                isActive("/admin/usage-activity")
+                isActive("/admin/usage")
                   ? "text-white font-bold"
                   : "hover:text-sky-300"
               }`}
