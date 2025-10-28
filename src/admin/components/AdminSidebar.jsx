@@ -72,7 +72,7 @@ function AdminSidebar({ isOpen, setIsOpen }) {
 
             {/* Print Requests */}
             <li
-              onClick={() => navigate("/admin/print-requests")}
+              onClick={() => navigate("/admin/requests")}
               className={`flex items-center cursor-pointer transition-colors ${
                 isActive("/admin/print-requests")
                   ? "text-white font-bold"

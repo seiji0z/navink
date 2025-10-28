@@ -12,6 +12,8 @@ import { useState, useEffect } from "react";
 
 // Admin pages
 import AdminHome from "./admin/pages/AdminHome";
+import Request from "./admin/pages/Request";
+import PrintRequest from "./admin/components/PrintRequest";
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -38,6 +40,9 @@ function App() {
 
         {/* ---------------- ADMIN SIDE ---------------- */}
         <Route path="/admin/home" element={<AdminHome />} />
+        <Route path="/admin/requests" element={<Request />} />
+        <Route path="/print-request/:id" element={<PrintRequest />} />
+
       </Routes>
     </BrowserRouter>
   );
