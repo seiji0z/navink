@@ -85,7 +85,7 @@ function AdminSidebar({ isOpen, setIsOpen }) {
 
             {/* Print Queue */}
             <li
-              onClick={() => navigate("/admin/print-queue")}
+              onClick={() => navigate("/admin/queue")}
               className={`flex items-center cursor-pointer transition-colors ${
                 isActive("/admin/print-queue")
                   ? "text-white font-bold"

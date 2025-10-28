@@ -10,7 +10,6 @@ function Login() {
     navigate("/home");
   };
 
-  // ✅ Updated route to match App.jsx
   const handleLogoClick = () => {
     navigate("/admin/home");
   };
