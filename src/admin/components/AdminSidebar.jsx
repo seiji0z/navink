@@ -111,9 +111,9 @@ function AdminSidebar({ isOpen, setIsOpen }) {
 
             {/* System Configuration */}
             <li
-              onClick={() => navigate("/admin/system-config")}
+              onClick={() => navigate("/admin/config")}
               className={`flex items-center cursor-pointer transition-colors ${
-                isActive("/admin/system-config")
+                isActive("/admin/config")
                   ? "text-white font-bold"
                   : "hover:text-sky-300"
               }`}
