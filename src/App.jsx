@@ -12,8 +12,8 @@ import { useState, useEffect } from "react";
 
 // Admin pages
 import AdminHome from "./admin/pages/AdminHome";
-import Request from "./admin/pages/Request";
-import PrintRequest from "./admin/components/PrintRequest";
+import PrintRequest from "./admin/pages/PrintRequest";
+import ReviewPrint from "./admin/pages/ReviewPrint";
 import Queue from "./admin/pages/Queue";
 import Usage from "./admin/pages/Usage";
 import Config from "./admin/pages/Configuration";
@@ -43,8 +43,8 @@ function App() {
 
         {/* ---------------- ADMIN SIDE ---------------- */}
         <Route path="/admin/home" element={<AdminHome />} />
-        <Route path="/admin/requests" element={<Request />} />
-        <Route path="/print-request/:id" element={<PrintRequest />} />
+        <Route path="/admin/requests" element={<PrintRequest />} />
+        <Route path="/print-request/:id" element={<ReviewPrint />} />
         <Route path="/admin/queue" element={<Queue />} />
         <Route path="/admin/usage" element={<Usage />} />
         <Route path="/admin/config" element={<Config />} />
