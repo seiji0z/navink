@@ -1,15 +1,83 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/images/navink-logo.png";
+import { supabase } from "../supabaseClient";
 
 function Login() {
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  // This effect checks if the user is already logged in
+  // and navigates them to the home page.
+  // It also handles the redirect back from Google.
+  useEffect(() => {
+    const checkSession = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (session) {
+        navigate("/home");
+      }
+    };
+    
+    checkSession();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        navigate("/home");
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [navigate]);
+
+  // Handles email/password sign-in
+  const handleEmailSignIn = async (e) => {
     e.preventDefault();
-    navigate("/home");
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      });
+
+      if (error) {
+        throw error;
+      }
+      // The useEffect hook will handle the navigation
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // Handles Google sign-in
+  const signInWithGoogle = async () => {
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+      });
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      // Loading state will persist until redirect
+      setLoading(true);
+    }
+  };
+
+  // Admin dashboard navigation 
   const handleLogoClick = () => {
     navigate("/admin/home");
   };
@@ -32,7 +100,7 @@ function Login() {
             Log in to your account
           </p>
 
-          <form className="space-y-5" onSubmit={handleSubmit}>
+          <form className="space-y-5" onSubmit={handleEmailSignIn}>
             <div>
               <label
                 htmlFor="email"
@@ -44,6 +112,9 @@ function Login() {
                 type="email"
                 id="email"
                 className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
               />
             </div>
 
@@ -56,7 +127,7 @@ function Login() {
                   Password
                 </label>
                 <a
-                  href="#"
+                  href="#" 
                   className="text-xs text-sky-500 hover:underline font-medium"
                 >
                   Reset password
@@ -66,14 +137,18 @@ function Login() {
                 type="password"
                 id="password"
                 className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
               />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-sky-700 text-white rounded-full py-2.5 -mb-0.5 font-medium hover:bg-sky-800 transition cursor-pointer"
+              className="w-full bg-sky-700 text-white rounded-full py-2.5 -mb-0.5 font-medium hover:bg-sky-800 transition cursor-pointer disabled:opacity-50"
+              disabled={loading}
             >
-              Sign in
+              {loading ? "Signing in..." : "Sign in"}
             </button>
           </form>
 
@@ -85,14 +160,16 @@ function Login() {
 
           <button
             type="button"
-            className="w-full flex items-center justify-center border border-gray-300 rounded-full py-2.5 text-sm hover:bg-gray-50 transition cursor-pointer"
+            className="w-full flex items-center justify-center border border-gray-300 rounded-full py-2.5 text-sm hover:bg-gray-50 transition cursor-pointer disabled:opacity-50"
+            onClick={signInWithGoogle}
+            disabled={loading}
           >
             <img
               src="https://www.svgrepo.com/show/475656/google-color.svg"
               alt="Google"
               className="w-5 h-5 mr-2"
             />
-            Continue with Google
+            {loading ? "Redirecting..." : "Continue with Google"}
           </button>
         </div>
 
