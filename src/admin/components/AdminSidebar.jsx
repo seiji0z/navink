@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import logo from "../../assets/images/navink-logo.png";
 import dashboard from "../../assets/icons/dashboard-icon.png";
@@ -6,14 +6,69 @@ import requests from "../../assets/icons/saved-files-icon.png";
 import queue from "../../assets/icons/print-files-icon.png";
 import usage from "../../assets/icons/usage-icon.png";
 import config from "../../assets/icons/config-icon.png";
+import { supabase } from "../../supabaseClient";
 
 function AdminSidebar({ isOpen, setIsOpen }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
 
-  const handleLogout = () => {
-    navigate("/login");
+  useEffect(() => {
+    const getUserInfo = async () => {
+      // Get the current session (Supabase v2)
+      const { data: { session } } = await supabase.auth.getSession();
+      const user = session?.user;
+
+      if (user) {
+        setUserEmail(user.email);
+
+        // Try to get full name from metadata
+        const name =
+          user.user_metadata?.full_name ||
+          `${user.user_metadata?.first_name || ""} ${user.user_metadata?.last_name || ""}`.trim();
+
+        setUserName(name || "User");
+      }
+    };
+
+    getUserInfo();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        const user = session.user;
+        setUserEmail(user.email);
+        const name =
+          user.user_metadata?.full_name ||
+          `${user.user_metadata?.first_name || ""} ${user.user_metadata?.last_name || ""}`.trim();
+        setUserName(name || "User");
+      } else {
+        setUserName("");
+        setUserEmail("");
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+
+      // Optionally clear local storage or other app state
+      localStorage.clear();
+      sessionStorage.clear();
+
+      // Navigate back to login
+      navigate("/login", { replace: true });
+    } catch (error) {
+      console.error("Error signing out:", error.message);
+      alert("Error logging out. Please try again.");
+    }
   };
 
   const isActive = (path) => location.pathname === path;
@@ -143,10 +198,10 @@ function AdminSidebar({ isOpen, setIsOpen }) {
           {isOpen && (
             <div className="ml-3 overflow-hidden">
               <p className="font-semibold text-white leading-tight">
-                Admin User
+                {userName || "Loading..."}
               </p>
               <p className="text-xs text-gray-300 leading-tight">
-                admin@navink.com
+                {userEmail || ""}
               </p>
             </div>
           )}

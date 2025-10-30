@@ -12,31 +12,105 @@ function Login() {
   // This effect checks if the user is already logged in
   // and navigates them to the home page.
   // It also handles the redirect back from Google.
+
   useEffect(() => {
-    const checkSession = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      if (session) {
-        navigate("/home");
+    const handleAuthChange = async (session) => {
+      // If the user is logged out, do nothing (stay on login page)
+      if (!session) {
+        navigate('/login', { replace: true });
+        return;
       }
-    };
-    
-    checkSession();
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+      const user = session.user;
+      const userEmail = user.email;
+
+      // 1. Check if the user is in the Staff table
+      const { data: staffData } = await supabase
+        .from('staff')
+        .select('role')
+        .eq('staff_email', userEmail)
+        .single(); // .single() returns one record or null
+
+      if (staffData) {
+        // User is Staff (Admin or Intern)!
+        navigate('/admin/home');
+        return;
+      }
+
+      // 2. If not staff, check if they are an EXISTING Student
+      const { data: studentData } = await supabase
+        .from('student')
+        .select('student_id')
+        .eq('student_email', userEmail)
+        .single();
+
+      if (studentData) {
+        // User is an existing Student!
+        navigate('/home');
+        return;
+      }
+
+      // 3. If not staff AND not existing student, check for NEW Google sign-in
+      if (user.app_metadata.provider === "google") {
+      // Extract names from Google metadata
+      const first_name =
+        user.user_metadata?.given_name ||
+        user.user_metadata?.first_name ||
+        user.user_metadata?.name?.split(" ")[0] ||
+        "";
+
+      const last_name =
+        user.user_metadata?.family_name ||
+        user.user_metadata?.last_name ||
+        (user.user_metadata?.name?.includes(" ")
+          ? user.user_metadata.name.split(" ").slice(-1)[0]
+          : "") ||
+        "";
+
+      // Create a new student profile
+      const { error: insertError } = await supabase
+        .from("student")
+        .insert({
+          student_email: userEmail,
+          first_name,
+          last_name,
+        });
+
+        if (insertError) {
+          alert(`Error creating student profile: ${insertError.message}. Please contact an administrator.`);
+          await supabase.auth.signOut(); // Log them out
+        } else {
+          // Successfully created student profile, send to student home
+          navigate('/home');
+        }
+        return;
+      }
+
+      // 4. Handle other cases (e.g., email/pass login for unknown user)
+      alert('Login failed. Your account is not registered in the system. Please use Google to sign up or contact an administrator.');
+      await supabase.auth.signOut();
+
+    };
+
+    // Check session on initial page load
+    supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        navigate("/home");
+        handleAuthChange(session);
       }
     });
 
+    // Listen for future auth events (login/logout)
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      handleAuthChange(session);
+    });
+
+    // Cleanup the listener when the component unmounts
     return () => {
       subscription.unsubscribe();
     };
-  }, [navigate]);
+  }, [navigate]); // Dependency array
 
   // Handles email/password sign-in
   const handleEmailSignIn = async (e) => {

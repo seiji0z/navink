@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import dashboardIcon from "../assets/icons/dashboard-icon.png";
@@ -7,16 +7,69 @@ import printIcon from "../assets/icons/print-files-icon.png";
 import historyIcon from "../assets/icons/history-icon.png";
 import logo from "../assets/images/navink-logo.png";
 import profilePic from "../assets/images/gab.png";
+import { supabase } from "../supabaseClient";
 
 function Sidebar({ isOpen, setIsOpen }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
 
-  const handleLogout = () => {
-    // localStorage.removeItem("token");
-    // sessionStorage.clear();
-    navigate("/login");
+  useEffect(() => {
+    const getUserInfo = async () => {
+      // Get the current session (Supabase v2)
+      const { data: { session } } = await supabase.auth.getSession();
+      const user = session?.user;
+
+      if (user) {
+        setUserEmail(user.email);
+
+        // Try to get full name from metadata
+        const name =
+          user.user_metadata?.full_name ||
+          `${user.user_metadata?.first_name || ""} ${user.user_metadata?.last_name || ""}`.trim();
+
+        setUserName(name || "User");
+      }
+    };
+
+    getUserInfo();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        const user = session.user;
+        setUserEmail(user.email);
+        const name =
+          user.user_metadata?.full_name ||
+          `${user.user_metadata?.first_name || ""} ${user.user_metadata?.last_name || ""}`.trim();
+        setUserName(name || "User");
+      } else {
+        setUserName("");
+        setUserEmail("");
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+
+      // Optionally clear local storage or other app state
+      localStorage.clear();
+      sessionStorage.clear();
+
+      // Navigate back to login
+      navigate("/login", { replace: true });
+    } catch (error) {
+      console.error("Error signing out:", error.message);
+      alert("Error logging out. Please try again.");
+    }
   };
 
   const isActive = (path) => location.pathname === path;
@@ -129,10 +182,10 @@ function Sidebar({ isOpen, setIsOpen }) {
           {isOpen && (
             <div className="ml-3 overflow-hidden">
               <p className="font-semibold text-white leading-tight">
-                Gabriel Flores
+                {userName || "Loading..."}
               </p>
               <p className="text-xs text-gray-300 leading-tight">
-                2240853@slu.edu.ph
+                {userEmail || ""}
               </p>
             </div>
           )}
@@ -148,7 +201,7 @@ function Sidebar({ isOpen, setIsOpen }) {
               <li
                 className="px-4 py-2 hover:bg-sky-100 cursor-pointer"
                 onClick={() => {
-                  navigate("/profile"); 
+                  navigate("/profile");
                   setShowProfileMenu(false);
                 }}
               >
