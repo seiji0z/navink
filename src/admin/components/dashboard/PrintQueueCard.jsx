@@ -1,7 +1,9 @@
 import React from "react";
 import logo from "../../../assets/images/navink-logo.png";
+import { useNavigate } from "react-router-dom";
 
 function PrintQueueCard() {
+  const navigate = useNavigate(); 
   const queue = [
     {
       jobId: "#001",
@@ -38,7 +40,12 @@ function PrintQueueCard() {
         >
           Print Queue
         </h3>
-        <button className="text-sm text-sky-600 hover:underline">View All</button>
+        <button
+          onClick={() => navigate("/admin/queue")}
+          className="text-sm text-sky-600 hover:underline"
+        >
+          View All
+        </button>
       </div>
 
       <div className="overflow-x-auto">

@@ -1,7 +1,10 @@
 import React from "react";
+import { useNavigate } from "react-router-dom"; 
 import logo from "../../../assets/images/navink-logo.png";
 
 function PendingPrintRequestsCard() {
+  const navigate = useNavigate(); 
+
   const requests = [
     {
       student: "Gabriel Flores",
@@ -56,7 +59,12 @@ function PendingPrintRequestsCard() {
         >
           Pending Print Requests
         </h3>
-        <button className="text-sm text-sky-600 hover:underline">View All</button>
+        <button
+          onClick={() => navigate("/admin/requests")}
+          className="text-sm text-sky-600 hover:underline"
+        >
+          View All
+        </button>
       </div>
 
       <div className="overflow-x-auto">
