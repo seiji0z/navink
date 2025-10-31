@@ -4,6 +4,7 @@ import Stepper from "../components/Stepper";
 import StepUploadPreview from "../components/steps/StepUploadPreview";
 import StepConfigurePrint from "../components/steps/StepConfigurePrint";
 import StepReviewConfirm from "../components/steps/StepReviewConfirm";
+import StepAgreementConfirm from "../components/steps/StepAgreementConfirm";
 import { supabase } from "../supabaseClient";
 
 export default function PrintFiles() {
@@ -13,13 +14,19 @@ export default function PrintFiles() {
   const [user, setUser] = useState(null);
   const [student, setStudent] = useState(null); // row from student table
 
-  const steps = ["Upload & Preview", "Configure Request", "Review & Confirm"];
+  // 🪜 Added the new step name for the Stepper
+  const steps = [
+    "Upload & Preview",
+    "Configure Request",
+    "Review & Confirm",
+    "Agreement & Finish",
+  ];
 
+  // 🔹 Fetch user + student info
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
-        // get authenticated user
         const {
           data: { user: supaUser },
         } = await supabase.auth.getUser();
@@ -31,7 +38,6 @@ export default function PrintFiles() {
 
         if (mounted) setUser(supaUser);
 
-        // fetch student row with token_balance
         const { data: studentRow, error: studentError } = await supabase
           .from("student")
           .select("*")
@@ -51,13 +57,38 @@ export default function PrintFiles() {
     return () => (mounted = false);
   }, []);
 
+  // 🔹 Go to next step
   const nextStep = (data) => {
     if (data) setPrintData((prev) => ({ ...prev, ...data }));
     setCurrentStep((s) => Math.min(s + 1, steps.length));
   };
 
+  // 🔹 Go to previous step
   const prevStep = () => setCurrentStep((s) => Math.max(s - 1, 1));
 
+  // 🔹 Handle successful submission (from last step)
+  const handleFinish = async () => {
+    // Optional: reset the flow after success
+    setPrintData({});
+    setCurrentStep(1);
+
+    // Refresh student balance
+    try {
+      const {
+        data: { user: supaUser },
+      } = await supabase.auth.getUser();
+      const { data: studentRow } = await supabase
+        .from("student")
+        .select("*")
+        .eq("user_id", supaUser.id)
+        .maybeSingle();
+      setStudent(studentRow);
+    } catch (e) {
+      console.warn(e);
+    }
+  };
+
+  // 🔹 Render correct step
   const renderStep = () => {
     switch (currentStep) {
       case 1:
@@ -68,30 +99,22 @@ export default function PrintFiles() {
         return (
           <StepReviewConfirm
             onBack={prevStep}
+            onNext={nextStep}
             data={printData}
             user={user}
             student={student}
-            onSuccess={() => {
-              // optional: reset flow after success
-              setPrintData({});
-              setCurrentStep(1);
-              // refresh student balance
-              (async () => {
-                try {
-                  const {
-                    data: { user: supaUser },
-                  } = await supabase.auth.getUser();
-                  const { data: studentRow } = await supabase
-                    .from("student")
-                    .select("*")
-                    .eq("user_id", supaUser.id)
-                    .maybeSingle();
-                  setStudent(studentRow);
-                } catch (e) {
-                  console.warn(e);
-                }
-              })();
-            }}
+            onSuccess={nextStep} // proceed to Agreement step on success
+          />
+        );
+      case 4:
+        return (
+          <StepAgreementConfirm
+            onBack={prevStep}
+            onFinish={handleFinish}
+            data={printData}
+            user={user}
+            student={student}
+            setStudent={setStudent}
           />
         );
       default:
