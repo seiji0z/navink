@@ -18,7 +18,7 @@ function Home() {
 
       {/* Main Content */}
       <main className="flex-1 p-6 flex flex-col relative">
-        <h2 className="text-xl font-semibold text-navi mb-4">Dashboard</h2>
+        <h2 className="text-2xl font-semibold text-navi mb-4">Dashboard</h2>
 
         <PrintButton /> 
 

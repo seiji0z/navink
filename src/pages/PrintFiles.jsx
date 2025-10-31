@@ -102,9 +102,12 @@ export default function PrintFiles() {
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
-      <main className="flex-1 p-6">
-        <Stepper steps={steps} currentStep={currentStep} />
-        <div className="mt-8">{renderStep()}</div>
+      <main className="flex-1 p-6 flex flex-col relative max-h-screen overflow-hidden">
+        <h2 className="text-2xl font-semibold text-navi mb-4">Print Files</h2>
+        <div className="bg-white rounded-3xl p-6 shadow-md flex-1">
+          <Stepper steps={steps} currentStep={currentStep} />
+          <div className="mt-2">{renderStep()}</div>
+        </div>
       </main>
     </div>
   );

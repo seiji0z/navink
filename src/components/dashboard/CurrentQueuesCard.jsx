@@ -121,8 +121,8 @@ function CurrentQueues() {
       <div className="max-h-60 overflow-y-auto flex-1">
         <ul className="space-y-3">
           {queues.length === 0 ? (
-            <p className="text-gray-400 text-center py-5">
-              No current print queues
+            <p className="text-gray-400 text-sm text-center italic py-4">
+              No current print queues.
             </p>
           ) : (
             queues.map((queue) => {

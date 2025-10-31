@@ -89,7 +89,7 @@ function PrintHistory() {
         {loading ? (
           <p className="text-gray-400 text-center">Loading print history...</p>
         ) : printHistory.length === 0 ? (
-          <p className="text-gray-400 text-center">No print history found.</p>
+          <p className="text-gray-400 text-sm text-center italic py-4">No print history found.</p>
         ) : (
           <table className="w-full text-left text-sm">
             <thead className="sticky top-0 bg-white">
