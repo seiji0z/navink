@@ -15,16 +15,16 @@ function Login() {
     
     // This is the core logic function that runs on any auth change
     const handleAuthChange = async (session) => {
-      // 1. If no session (user logged out), do nothing.
+      // If no session (user logged out), do nothing.
       if (!session) {
         return; 
       }
 
-      // 2. Get the authenticated user and their UUID
+      // Get the authenticated user and their UUID
       const user = session.user;
       const userId = user.id; // This is the UUID from auth.users
 
-      // 3. Check if the user is in the Staff table
+      // Check if the user is in the Staff table
       // We query by the 'user_id' (UUID) foreign key
       const { data: staffData } = await supabase
         .from('staff')
@@ -38,7 +38,7 @@ function Login() {
         return;
       }
 
-      // 4. If not staff, check if they are an EXISTING Student
+      // If not staff, check if they are an EXISTING Student
       // We also query by the 'user_id' (UUID)
       const { data: studentData } = await supabase
         .from('student')
@@ -52,7 +52,7 @@ function Login() {
         return;
       }
 
-      // 5. If NOT staff AND NOT existing student, it's a NEW user.
+      // If NOT staff AND NOT existing student, it's a NEW user.
       // We only auto-create profiles for Google sign-ins.
       if (user.app_metadata.provider === "google") {
         const fullName = user.user_metadata?.full_name || user.user_metadata?.name || "New Student";
@@ -86,7 +86,7 @@ function Login() {
         return;
       }
 
-      // 6. Handle other cases (e.g., email/pass login for an unknown user)
+      // Handle other cases (e.g., email/pass login for an unknown user)
       // This user is authenticated but has no profile in 'staff' or 'student'.
       alert('Login failed. Your account is not registered in the system. Please use Google to sign up or contact an administrator.');
       await supabase.auth.signOut();
@@ -140,7 +140,6 @@ function Login() {
         provider: "google",
         options: {
           // Optional: You can request specific scopes if needed
-          // scopes: 'email profile',
         }
       });
       if (error) {
@@ -152,11 +151,6 @@ function Login() {
       // Loading state will persist until redirect
       setLoading(true);
     }
-  };
-
-  // Admin dashboard navigation 
-  const handleLogoClick = () => {
-    navigate("/admin/home");
   };
 
   return (
@@ -215,7 +209,7 @@ function Login() {
                 id="password"
                 className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400"
                 value={password}
-                onChange={(e) => setPassword(e.targe.value)}
+                onChange={(e) => setPassword(e.target.value)}
                 disabled={loading}
               />
             </div>
@@ -256,9 +250,7 @@ function Login() {
           <img
             src={logo}
             alt="Navink Logo"
-            className="w-64 mb-3 cursor-pointer transition-transform hover:scale-105"
-            onClick={handleLogoClick}
-            title="Go to Admin Dashboard"
+            className="w-64 mb-3"
           />
           <h1
             className="text-5xl font-semibold pb-7 select-none"
@@ -269,7 +261,7 @@ function Login() {
         </div>
       </div>
     </div>
-  );
+  );  
 }
 
 export default Login;
