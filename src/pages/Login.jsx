@@ -55,29 +55,34 @@ function Login() {
       // 5. If NOT staff AND NOT existing student, it's a NEW user.
       // We only auto-create profiles for Google sign-ins.
       if (user.app_metadata.provider === "google") {
-        
-        // Get user's full name and avatar from Google metadata
         const fullName = user.user_metadata?.full_name || user.user_metadata?.name || "New Student";
         const profilePhoto = user.user_metadata?.avatar_url || null;
 
-        // Create a new student profile linked to the auth user's UUID
-        const { error: insertError } = await supabase
+        // Check if student already exists
+        const { data: existingStudent } = await supabase
           .from("student")
-          .insert({
-            user_id: userId,        // The UUID
-            full_name: fullName,
-            profile_photo: profilePhoto
-            // 'course', 'year_level' will be NULL
-            // 'token_balance' will use its DEFAULT (500)
-          });
+          .select("user_id")
+          .eq("user_id", userId)
+          .single();
 
-        if (insertError) {
-          alert(`Error creating student profile: ${insertError.message}. Please contact an administrator.`);
-          await supabase.auth.signOut(); // Log them out
-        } else {
-          // Successfully created student profile, send to student home
-          navigate('/home', { replace: true });
+        if (!existingStudent) {
+          const { error: insertError } = await supabase
+            .from("student")
+            .insert({
+              user_id: userId,
+              full_name: fullName,
+              profile_photo: profilePhoto
+            });
+
+          if (insertError) {
+            alert(`Error creating student profile: ${insertError.message}. Please contact an administrator.`);
+            await supabase.auth.signOut();
+            return;
+          }
         }
+
+        // Go to student home either way
+        navigate("/home", { replace: true });
         return;
       }
 
