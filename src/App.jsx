@@ -1,3 +1,6 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useState, useEffect } from "react";
+
 import Splash from "./components/Splash";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
@@ -7,8 +10,6 @@ import SmoothFollower from "./components/SmoothFollower";
 import PrintFiles from "./pages/PrintFiles";
 import Policies from "./pages/Policies";
 import Profile from "./pages/Profile";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState, useEffect } from "react";
 
 // Admin pages
 import AdminHome from "./admin/pages/AdminHome";
@@ -19,14 +20,21 @@ import Usage from "./admin/pages/Usage";
 import Config from "./admin/pages/Configuration";
 
 function App() {
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowSplash(false), 3000);
-    return () => clearTimeout(timer);
+    const hasSeenSplash = localStorage.getItem("hasSeenSplash");
+
+    if (!hasSeenSplash) {
+      setShowSplash(true);
+      localStorage.setItem("hasSeenSplash", "true");
+
+      const timer = setTimeout(() => setShowSplash(false), 3000);
+      return () => clearTimeout(timer);
+    }
   }, []);
 
-  if (showSplash) return <Splash />;
+  if (showSplash) return <Splash onFinish={() => setShowSplash(false)} />;
 
   return (
     <BrowserRouter>
@@ -48,7 +56,6 @@ function App() {
         <Route path="/admin/queue" element={<Queue />} />
         <Route path="/admin/usage" element={<Usage />} />
         <Route path="/admin/config" element={<Config />} />
-
       </Routes>
     </BrowserRouter>
   );

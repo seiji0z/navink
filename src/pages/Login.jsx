@@ -9,97 +9,91 @@ function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // This effect checks if the user is already logged in
-  // and navigates them to the home page.
-  // It also handles the redirect back from Google.
-
+  // This effect checks if the user is logged in
+  // and handles routing AFTER auth, including Google redirect.
   useEffect(() => {
+    
+    // This is the core logic function that runs on any auth change
     const handleAuthChange = async (session) => {
-      // If the user is logged out, do nothing (stay on login page)
+      // 1. If no session (user logged out), do nothing.
       if (!session) {
-        navigate('/login', { replace: true });
-        return;
+        return; 
       }
 
+      // 2. Get the authenticated user and their UUID
       const user = session.user;
-      const userEmail = user.email;
+      const userId = user.id; // This is the UUID from auth.users
 
-      // 1. Check if the user is in the Staff table
+      // 3. Check if the user is in the Staff table
+      // We query by the 'user_id' (UUID) foreign key
       const { data: staffData } = await supabase
         .from('staff')
-        .select('role')
-        .eq('staff_email', userEmail)
-        .single(); // .single() returns one record or null
+        .select('access_level') // Just check if a record exists
+        .eq('user_id', userId)
+        .single();
 
       if (staffData) {
-        // User is Staff (Admin or Intern)!
-        navigate('/admin/home');
+        // User is Staff! Send to admin dashboard.
+        navigate('/admin/home', { replace: true });
         return;
       }
 
-      // 2. If not staff, check if they are an EXISTING Student
+      // 4. If not staff, check if they are an EXISTING Student
+      // We also query by the 'user_id' (UUID)
       const { data: studentData } = await supabase
         .from('student')
-        .select('student_id')
-        .eq('student_email', userEmail)
+        .select('user_id') // Just check if a record exists
+        .eq('user_id', userId)
         .single();
 
       if (studentData) {
-        // User is an existing Student!
-        navigate('/home');
+        // User is an existing Student! Send to student home.
+        navigate('/home', { replace: true });
         return;
       }
 
-      // 3. If not staff AND not existing student, check for NEW Google sign-in
+      // 5. If NOT staff AND NOT existing student, it's a NEW user.
+      // We only auto-create profiles for Google sign-ins.
       if (user.app_metadata.provider === "google") {
-      // Extract names from Google metadata
-      const first_name =
-        user.user_metadata?.given_name ||
-        user.user_metadata?.first_name ||
-        user.user_metadata?.name?.split(" ")[0] ||
-        "";
+        
+        // Get user's full name and avatar from Google metadata
+        const fullName = user.user_metadata?.full_name || user.user_metadata?.name || "New Student";
+        const profilePhoto = user.user_metadata?.avatar_url || null;
 
-      const last_name =
-        user.user_metadata?.family_name ||
-        user.user_metadata?.last_name ||
-        (user.user_metadata?.name?.includes(" ")
-          ? user.user_metadata.name.split(" ").slice(-1)[0]
-          : "") ||
-        "";
-
-      // Create a new student profile
-      const { error: insertError } = await supabase
-        .from("student")
-        .insert({
-          student_email: userEmail,
-          first_name,
-          last_name,
-        });
+        // Create a new student profile linked to the auth user's UUID
+        const { error: insertError } = await supabase
+          .from("student")
+          .insert({
+            user_id: userId,        // The UUID
+            full_name: fullName,
+            profile_photo: profilePhoto
+            // 'course', 'year_level' will be NULL
+            // 'token_balance' will use its DEFAULT (500)
+          });
 
         if (insertError) {
           alert(`Error creating student profile: ${insertError.message}. Please contact an administrator.`);
           await supabase.auth.signOut(); // Log them out
         } else {
           // Successfully created student profile, send to student home
-          navigate('/home');
+          navigate('/home', { replace: true });
         }
         return;
       }
 
-      // 4. Handle other cases (e.g., email/pass login for unknown user)
+      // 6. Handle other cases (e.g., email/pass login for an unknown user)
+      // This user is authenticated but has no profile in 'staff' or 'student'.
       alert('Login failed. Your account is not registered in the system. Please use Google to sign up or contact an administrator.');
       await supabase.auth.signOut();
-
+      navigate('/login', { replace: true });
     };
 
     // Check session on initial page load
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        handleAuthChange(session);
-      }
+      handleAuthChange(session);
     });
 
-    // Listen for future auth events (login/logout)
+    // Listen for future auth events (login/logout/redirect)
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -139,6 +133,10 @@ function Login() {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
+        options: {
+          // Optional: You can request specific scopes if needed
+          // scopes: 'email profile',
+        }
       });
       if (error) {
         throw error;
@@ -201,7 +199,7 @@ function Login() {
                   Password
                 </label>
                 <a
-                  href="#" 
+                  href="#" // TODO: Implement password reset
                   className="text-xs text-sky-500 hover:underline font-medium"
                 >
                   Reset password
@@ -212,7 +210,7 @@ function Login() {
                 id="password"
                 className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.targe.value)}
                 disabled={loading}
               />
             </div>
