@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { Document, Page, pdfjs } from "react-pdf";
+
+// Load worker for PDF.js
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 const StepConfigurePrint = ({ onNext, onBack, data }) => {
   const [copies, setCopies] = useState(1);
@@ -11,34 +15,53 @@ const StepConfigurePrint = ({ onNext, onBack, data }) => {
   const [totalPages, setTotalPages] = useState(1);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [rangeError, setRangeError] = useState("");
+  const [selectedPages, setSelectedPages] = useState([]);
 
   useEffect(() => {
     if (data) {
       setTotalPages(data.totalPages || 1);
       setPreviewUrl(data.previewUrl);
+      if (data.totalPages) {
+        setSelectedPages(Array.from({ length: data.totalPages }, (_, i) => i + 1));
+      }
     }
   }, [data]);
 
-  const validateRange = (rangeStr) => {
-    const ranges = rangeStr.split(",").map((r) => r.trim());
-    for (let r of ranges) {
+  // Parse and validate custom page ranges
+  const parseRange = (rangeStr) => {
+    const pages = new Set();
+    const parts = rangeStr.split(",").map((r) => r.trim());
+    for (let r of parts) {
       if (r.includes("-")) {
         const [start, end] = r.split("-").map(Number);
-        if (
-          isNaN(start) ||
-          isNaN(end) ||
-          start < 1 ||
-          end > totalPages ||
-          start > end
-        )
-          return false;
+        for (let i = start; i <= end; i++) pages.add(i);
       } else {
         const page = Number(r);
-        if (isNaN(page) || page < 1 || page > totalPages) return false;
+        if (!isNaN(page)) pages.add(page);
       }
     }
-    return true;
+    return [...pages].sort((a, b) => a - b);
   };
+
+  const validateRange = (rangeStr) => {
+    const pages = parseRange(rangeStr);
+    if (!pages.length) return false;
+    return pages.every((p) => p >= 1 && p <= totalPages);
+  };
+
+  useEffect(() => {
+    if (printRangeOption === "Select Pages" && customRange) {
+      if (validateRange(customRange)) {
+        setRangeError("");
+        setSelectedPages(parseRange(customRange));
+      } else {
+        setRangeError(`Invalid range. Must be within 1–${totalPages}.`);
+      }
+    } else if (printRangeOption === "All Pages") {
+      setSelectedPages(Array.from({ length: totalPages }, (_, i) => i + 1));
+      setRangeError("");
+    }
+  }, [customRange, printRangeOption, totalPages]);
 
   const handleNext = () => {
     if (printRangeOption === "Select Pages" && !validateRange(customRange)) {
@@ -57,18 +80,20 @@ const StepConfigurePrint = ({ onNext, onBack, data }) => {
           : customRange,
       printOption,
       printDate,
+      selectedPages,
     });
   };
 
   return (
-    <div className="p-6 bg-white rounded-2xl shadow-md max-w-3xl mx-auto space-y-6">
+    <div className="p-6 bg-white rounded-2xl shadow-md max-w-4xl mx-auto space-y-6">
       <h2 className="text-xl font-semibold text-gray-800 border-b pb-2">
         Configure Print Settings
       </h2>
 
       <div className="grid grid-cols-2 gap-6">
-        {/* Left Side: Form */}
+        {/* Left: Settings Form */}
         <div className="space-y-4">
+          {/* Copies */}
           <div>
             <label className="block font-medium text-gray-700">Copies:</label>
             <input
@@ -80,6 +105,7 @@ const StepConfigurePrint = ({ onNext, onBack, data }) => {
             />
           </div>
 
+          {/* Paper Size */}
           <div>
             <label className="block font-medium text-gray-700">Paper Size:</label>
             <select
@@ -93,6 +119,7 @@ const StepConfigurePrint = ({ onNext, onBack, data }) => {
             </select>
           </div>
 
+          {/* Color */}
           <div>
             <label className="block font-medium text-gray-700">Color:</label>
             <select
@@ -105,6 +132,7 @@ const StepConfigurePrint = ({ onNext, onBack, data }) => {
             </select>
           </div>
 
+          {/* Page Range */}
           <div>
             <label className="block font-medium text-gray-700">
               Print Range: (Total {totalPages})
@@ -148,6 +176,7 @@ const StepConfigurePrint = ({ onNext, onBack, data }) => {
             )}
           </div>
 
+          {/* Print Date */}
           <div>
             <label className="block font-medium text-gray-700">Print Date:</label>
             <div className="flex items-center space-x-4 mt-1">
@@ -181,31 +210,35 @@ const StepConfigurePrint = ({ onNext, onBack, data }) => {
           </div>
         </div>
 
-        {/* Right Side: Preview */}
-        <div className="border rounded-xl overflow-hidden bg-gray-50">
-          {previewUrl ? (
-            data?.file?.type?.startsWith("image/") ? (
-              <img
-                src={previewUrl}
-                alt="Preview"
-                className={`w-full h-96 object-contain ${
-                  colorMode === "Black & White" ? "grayscale" : ""
-                }`}
-              />
+        {/* Right: PDF Preview */}
+        <div>
+          <div className="border rounded-xl bg-gray-50 p-4 h-96 overflow-y-auto">
+            {previewUrl ? (
+              <Document file={previewUrl} loading="Loading PDF...">
+                {selectedPages.map((pageNum) => (
+                  <div
+                    key={pageNum}
+                    className="mb-6 border-b border-gray-300 pb-3 last:border-none"
+                  >
+                    <p className="text-sm text-gray-500 mb-2">Page {pageNum}</p>
+                    <Page
+                      pageNumber={pageNum}
+                      renderTextLayer={false}
+                      renderAnnotationLayer={false}
+                      className={`${
+                        colorMode === "Black & White" ? "grayscale" : ""
+                      }`}
+                      width={350}
+                    />
+                  </div>
+                ))}
+              </Document>
             ) : (
-              <iframe
-                src={previewUrl}
-                title="Document Preview"
-                className={`w-full h-96 ${
-                  colorMode === "Black & White" ? "filter grayscale" : ""
-                }`}
-              />
-            )
-          ) : (
-            <div className="h-96 flex items-center justify-center text-gray-400">
-              No preview available
-            </div>
-          )}
+              <div className="h-full flex items-center justify-center text-gray-400">
+                No preview available
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
