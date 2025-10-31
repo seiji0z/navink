@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { supabase } from "../supabaseClient"; // Make sure to import supabase
+import { supabase } from "../supabaseClient"; 
 
-// 1. Accept the 'user' prop from Profile.js
+// THIS WHOLE COMPONENT NEEDS CLARIFICATION
+
+// Accept the 'user' prop from Profile.js
 export default function FeedbackCard({ feedback, setFeedback, user }) {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
@@ -11,7 +13,7 @@ export default function FeedbackCard({ feedback, setFeedback, user }) {
   const [recentTransactions, setRecentTransactions] = useState([]);
   const [loadingActivity, setLoadingActivity] = useState(true);
 
-  // 2. Fetch recent activity on component mount
+  // Fetch recent activity on component mount
   useEffect(() => {
     async function fetchRecentActivity() {
       if (!user) return; // Wait for the user prop
@@ -57,7 +59,7 @@ export default function FeedbackCard({ feedback, setFeedback, user }) {
     fetchRecentActivity();
   }, [user]); // Re-run if user prop changes
 
-  // 3. Handle the form submission
+  // Handle the form submission
   const handleSubmit = async () => {
     setIsSubmitting(true);
     setErrorMessage("");
@@ -124,7 +126,7 @@ export default function FeedbackCard({ feedback, setFeedback, user }) {
         Share your experience with your recent print transaction.
       </p>
 
-      {/* 4. Add 5-Star Rating Input */}
+      {/* Add 5-Star Rating Input */}
       <div className="flex justify-center gap-1 mt-4">
         {[1, 2, 3, 4, 5].map((star) => (
           <span
@@ -165,8 +167,7 @@ export default function FeedbackCard({ feedback, setFeedback, user }) {
         <p className="text-sm text-green-600 mt-2 text-center">{successMessage}</p>
       )}
 
-
-      {/* 5. Dynamic Recent Activity Section */}
+      {/* Dynamic Recent Activity Section */}
       <div className="mt-6">
         <h4 className="text-sm text-gray-500">Recent activity</h4>
         {loadingActivity ? (
