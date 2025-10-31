@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
+import { supabase } from "../../supabaseClient"; // ✅ adjust path if needed
 
-// Load worker for PDF.js
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 const StepConfigurePrint = ({ onNext, onBack, data }) => {
@@ -16,6 +16,7 @@ const StepConfigurePrint = ({ onNext, onBack, data }) => {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [rangeError, setRangeError] = useState("");
   const [selectedPages, setSelectedPages] = useState([]);
+  const [tokenCost, setTokenCost] = useState(0);
 
   useEffect(() => {
     if (data) {
@@ -63,6 +64,29 @@ const StepConfigurePrint = ({ onNext, onBack, data }) => {
     }
   }, [customRange, printRangeOption, totalPages]);
 
+  /* =========================================================
+     🧮 Token Cost Calculation (matches StepReviewConfirm)
+  ========================================================= */
+  const calculateTokens = () => {
+    if (!selectedPages.length || !copies) return 0;
+
+    const totalPagesSelected = selectedPages.length;
+    const isImagePrint = data?.isImagePrint || false; // if flagged
+    let tokensPerPage = 0;
+
+    if (isImagePrint) {
+      tokensPerPage = colorMode === "Colored" ? 15 : 10;
+    } else {
+      tokensPerPage = colorMode === "Colored" ? 10 : 1;
+    }
+
+    return tokensPerPage * totalPagesSelected * copies;
+  };
+
+  useEffect(() => {
+    setTokenCost(calculateTokens());
+  }, [copies, colorMode, paperSize, selectedPages]);
+
   const handleNext = () => {
     if (printRangeOption === "Select Pages" && !validateRange(customRange)) {
       setRangeError(`Invalid range. Must be within 1–${totalPages}.`);
@@ -81,6 +105,7 @@ const StepConfigurePrint = ({ onNext, onBack, data }) => {
       printOption,
       printDate,
       selectedPages,
+      tokenCost,
     });
   };
 
@@ -100,7 +125,7 @@ const StepConfigurePrint = ({ onNext, onBack, data }) => {
               type="number"
               min="1"
               value={copies}
-              onChange={(e) => setCopies(e.target.value)}
+              onChange={(e) => setCopies(parseInt(e.target.value) || 1)}
               className="w-full mt-1 p-2 border rounded-lg"
             />
           </div>
@@ -119,7 +144,7 @@ const StepConfigurePrint = ({ onNext, onBack, data }) => {
             </select>
           </div>
 
-          {/* Color */}
+          {/* Color Mode */}
           <div>
             <label className="block font-medium text-gray-700">Color:</label>
             <select
@@ -149,7 +174,6 @@ const StepConfigurePrint = ({ onNext, onBack, data }) => {
                 />
                 <span>All Pages</span>
               </label>
-
               <label className="flex items-center space-x-2">
                 <input
                   type="radio"
@@ -208,6 +232,16 @@ const StepConfigurePrint = ({ onNext, onBack, data }) => {
               />
             )}
           </div>
+
+          {/* Token Cost */}
+          <div className="pt-2 border-t mt-4">
+            <label className="block font-medium text-gray-700">
+              Estimated Token Cost:
+            </label>
+            <div className="mt-1 text-lg font-semibold text-sky-700">
+              {tokenCost ? `${tokenCost} tokens` : "—"}
+            </div>
+          </div>
         </div>
 
         {/* Right: PDF Preview */}
@@ -225,9 +259,7 @@ const StepConfigurePrint = ({ onNext, onBack, data }) => {
                       pageNumber={pageNum}
                       renderTextLayer={false}
                       renderAnnotationLayer={false}
-                      className={`${
-                        colorMode === "Black & White" ? "grayscale" : ""
-                      }`}
+                      className={`${colorMode === "Black & White" ? "grayscale" : ""}`}
                       width={350}
                     />
                   </div>
