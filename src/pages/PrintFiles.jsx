@@ -24,7 +24,7 @@ export default function PrintFiles() {
       case 1:
         return <StepUploadPreview onNext={nextStep} />;
       case 2:
-        return <StepConfigurePrint onNext={nextStep} onBack={prevStep} />;
+        return <StepConfigurePrint onNext={nextStep} onBack={prevStep} data={printData} />;
       case 3:
         return <StepReviewConfirm onBack={prevStep} data={printData} />;
       default:
@@ -33,23 +33,11 @@ export default function PrintFiles() {
   };
 
   return (
-    <div className="fade-in flex min-h-screen bg-sky-100">
-      {/* Sidebar (Sticky) */}
-      <div className="sticky top-0 h-screen">
-        <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
-      </div>
-
-      {/* Main Content */}
-      <main className="flex-1 p-6 flex flex-col">
-        <h2 className="text-xl font-semibold text-navi mb-4">Print Files</h2>
-
-        <div className="bg-white rounded-3xl p-6 shadow-md flex-1">
-          {/* Stepper */}
-          <Stepper steps={steps} currentStep={currentStep} />
-
-          {/* Step Content */}
-          <div className="mt-10">{renderStep()}</div>
-        </div>
+    <div className="flex min-h-screen bg-gray-50">
+      <Sidebar isOpen={isSidebarOpen} toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+      <main className="flex-1 p-6">
+        <Stepper steps={steps} currentStep={currentStep} />
+        <div className="mt-8">{renderStep()}</div>
       </main>
     </div>
   );
