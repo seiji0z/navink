@@ -140,7 +140,9 @@ export default function ProfileCard() {
                 onChange={(e) => setCourse(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-sky-300"
               >
-                <option value="">Select Course</option>
+                <option value="" hidden disabled>
+                  Select Course
+                </option>
                 {courseOptions.map((c) => (
                   <option key={c} value={c}>
                     {c}

@@ -148,7 +148,7 @@ function Notifications() {
             );
           })
         ) : (
-          <div className="text-gray-500 text-sm text-center italic py-4">
+          <div className="text-gray-400 text-sm text-center italic py-4">
             No notifications yet.
           </div>
         )}

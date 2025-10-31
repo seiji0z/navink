@@ -105,11 +105,8 @@ function HistoryPage() {
       <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
 
       {/* Main Content */}
-      <main className="flex-1 p-8 flex flex-col">
-        <h2 className="text-xl font-semibold text-gray-500">History</h2>
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">
-          Print Request Records
-        </h1>
+      <main className="flex-1 p-6 flex flex-col relative">
+        <h2 className="text-2xl font-semibold text-navi mb-4">History</h2>
 
         <div className="bg-white rounded-3xl p-6 shadow-md flex-1">
           {/* Search and Filter Section */}
