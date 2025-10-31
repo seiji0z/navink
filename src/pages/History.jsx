@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
+
+import { supabase } from "../supabaseClient";
 import searchIcon from "../assets/icons/search-icon.png";
 import calendarIcon from "../assets/icons/calendar-icon.png";
 import pendingIcon from "../assets/icons/pending-icon.png";
@@ -9,40 +11,93 @@ function HistoryPage() {
   const [isOpen, setIsOpen] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
+  const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const files = [
-    {
-      date: "January 12, 2025, 9:35 AM",
-      id: "PSLU-0001",
-      name: "toPrint.pdf",
-      status: "Pending",
-      pages: 5,
-      token: 30,
-    },
-    {
-      date: "January 12, 2025, 10:41 AM",
-      id: "PSLU-0002",
-      name: "Final-Thesis-Paper.pdf",
-      status: "Complete",
-      pages: 354,
-      token: 50,
-    },
-    {
-      date: "January 17, 2025, 1:13 PM",
-      id: "PSLU-0014",
-      name: "SoftEng_Act1.docx",
-      status: "Complete",
-      pages: 2,
-      token: 10,
-    },
-  ];
+  // 🧾 Fetch print history for the logged-in student
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        // 1️⃣ Get the current authenticated user
+        const {
+          data: { user },
+          error: userError,
+        } = await supabase.auth.getUser();
+        if (userError) throw userError;
+        if (!user) {
+          setFiles([]);
+          setLoading(false);
+          return;
+        }
 
+        // 2️⃣ Fetch print transactions joined with their print request details
+        const { data, error } = await supabase
+          .from("print_transaction")
+          .select(
+            `
+            transaction_id,
+            status,
+            tokens_deducted,
+            datetime_approved,
+            print_request (
+              file_name,
+              num_pages,
+              num_copies,
+              paper_size,
+              datetime_requested,
+              student_id
+            )
+          `
+          )
+          .order("datetime_approved", { ascending: false });
+
+        if (error) throw error;
+
+        // 3️⃣ Filter for the logged-in student's records only
+        const studentHistory = data
+          .filter((item) => item.print_request?.student_id === user.id)
+          .map((item, index) => ({
+            id: item.transaction_id || `TRX-${index + 1}`,
+            name: item.print_request?.file_name || "Untitled",
+            date: new Date(
+              item.print_request?.datetime_requested
+            ).toLocaleString(),
+            status:
+              item.status === "Collected" || item.status === "Printed"
+                ? "Complete"
+                : item.status === "Approved" || item.status === "Pending"
+                ? "Pending"
+                : item.status || "Pending",
+            pages: item.print_request?.num_pages || 0,
+            token: item.tokens_deducted || 0,
+          }));
+
+        setFiles(studentHistory);
+      } catch (err) {
+        console.error("Error fetching print history:", err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHistory();
+  }, []);
+
+  // 🔍 Filtering logic
   const filteredFiles = files.filter(
     (file) =>
       (file.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         file.id.toLowerCase().includes(searchTerm.toLowerCase())) &&
       (filterStatus === "All" || file.status === filterStatus)
   );
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-sky-100">
+        <p className="text-gray-500 text-lg">Loading print history...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="fade-in flex min-h-screen bg-sky-100">
@@ -53,7 +108,7 @@ function HistoryPage() {
       <main className="flex-1 p-8 flex flex-col">
         <h2 className="text-xl font-semibold text-gray-500">History</h2>
         <h1 className="text-3xl font-bold text-gray-900 mb-6">
-          Start exploring
+          Print Request Records
         </h1>
 
         <div className="bg-white rounded-3xl p-6 shadow-md flex-1">
@@ -66,13 +121,15 @@ function HistoryPage() {
                   type="text"
                   placeholder="Search by File Name or File ID"
                   className="flex-1 px-4 py-2 text-gray-700 focus:outline-none"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <button className="bg-[#1F6D8B] hover:bg-sky-600 flex items-center justify-center px-4">
                   <img src={searchIcon} alt="Search" className="w-4 h-4" />
                 </button>
               </div>
 
-              {/* Calendar Button */}
+              {/* Calendar Button (optional future feature) */}
               <button className="border rounded-full p-3 text-gray-500 hover:bg-gray-100 flex items-center justify-center">
                 <img src={calendarIcon} alt="Calendar" className="w-4 h-4" />
               </button>
@@ -104,36 +161,47 @@ function HistoryPage() {
                 </tr>
               </thead>
               <tbody>
-                {filteredFiles.map((file, index) => (
-                  <tr key={index} className="border-b hover:bg-gray-50">
-                    <td className="py-2">{file.date}</td>
-                    <td className="py-2">{file.id}</td>
-                    <td className="py-2">{file.name}</td>
-                    <td className="py-2">
-                      {file.status === "Pending" ? (
-                        <span className="inline-flex items-center bg-orange-100 text-orange-700 text-xs font-semibold px-2 py-1 rounded-lg">
-                          <img
-                            src={pendingIcon}
-                            alt="Pending"
-                            className="w-3 h-3 mr-1"
-                          />
-                          Pending
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center bg-green-100 text-green-700 text-xs font-semibold px-2 py-1 rounded-lg">
-                          <img
-                            src={completeIcon}
-                            alt="Complete"
-                            className="w-3 h-3 mr-1"
-                          />
-                          Complete
-                        </span>
-                      )}
+                {filteredFiles.length > 0 ? (
+                  filteredFiles.map((file, index) => (
+                    <tr key={index} className="border-b hover:bg-gray-50">
+                      <td className="py-2">{file.date}</td>
+                      <td className="py-2">{file.id}</td>
+                      <td className="py-2">{file.name}</td>
+                      <td className="py-2">
+                        {file.status === "Pending" ? (
+                          <span className="inline-flex items-center bg-orange-100 text-orange-700 text-xs font-semibold px-2 py-1 rounded-lg">
+                            <img
+                              src={pendingIcon}
+                              alt="Pending"
+                              className="w-3 h-3 mr-1"
+                            />
+                            Pending
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center bg-green-100 text-green-700 text-xs font-semibold px-2 py-1 rounded-lg">
+                            <img
+                              src={completeIcon}
+                              alt="Complete"
+                              className="w-3 h-3 mr-1"
+                            />
+                            Complete
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-2">{file.pages}</td>
+                      <td className="py-2">{file.token}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan="6"
+                      className="text-center py-4 text-gray-400 italic"
+                    >
+                      No print records found.
                     </td>
-                    <td className="py-2">{file.pages}</td>
-                    <td className="py-2">{file.token}</td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
