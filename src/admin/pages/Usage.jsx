@@ -29,7 +29,7 @@ function Usage() {
   ];
 
   return (
-    <div className="fade-in flex min-h-screen bg-sky-100">
+    <div className="fade-in flex h-screen bg-sky-100 overflow-hidden">
       <AdminSidebar isOpen={isOpen} setIsOpen={setIsOpen} />
 
       {/* Main Content */}

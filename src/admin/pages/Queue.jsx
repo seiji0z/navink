@@ -51,7 +51,7 @@ function Queue() {
   ];
 
   return (
-    <div className="fade-in flex min-h-screen bg-sky-100">
+    <div className="fade-in flex h-screen bg-sky-100 overflow-hidden">
       <AdminSidebar isOpen={isOpen} setIsOpen={setIsOpen} />
 
       {/* Main Content */}
@@ -60,7 +60,7 @@ function Queue() {
         <h1 className="text-3xl font-bold text-gray-900 mb-6">Print Queue Control</h1>
 
         {/* White Card */}
-        <div className="bg-white rounded-3xl p-6 shadow-md flex-1 overflow-hidden flex flex-col">
+        <div className="bg-white rounded-3xl p-6 shadow-md flex-1 overflow-y-auto flex flex-col pb-4">
           
           {/* Filter & Search Component */}
           <QueueFilter />

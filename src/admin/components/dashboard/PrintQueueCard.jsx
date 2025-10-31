@@ -31,7 +31,7 @@ function PrintQueueCard() {
   };
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow w-full h-full flex flex-col">
+    <div className="bg-white rounded-2xl p-6 shadow w-full h-80 flex flex-col">
       <div className="flex justify-between items-center mb-4">
         <h3
           className="text-lg font-medium text-gray-500"
@@ -47,7 +47,7 @@ function PrintQueueCard() {
         </Link>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="overflow-auto flex-1">
         <table className="w-full text-sm text-gray-700">
           <thead>
             <tr className="border-b">
