@@ -6,7 +6,6 @@ import savedIcon from "../assets/icons/saved-files-icon.png";
 import printIcon from "../assets/icons/print-files-icon.png";
 import historyIcon from "../assets/icons/history-icon.png";
 import logo from "../assets/images/navink-logo.png";
-import profilePic from "../assets/images/gab.png";
 import { supabase } from "../supabaseClient";
 
 function Sidebar({ isOpen, setIsOpen }) {
@@ -15,40 +14,50 @@ function Sidebar({ isOpen, setIsOpen }) {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
+  const [profileUrl, setProfileUrl] = useState("");
 
   useEffect(() => {
     const getUserInfo = async () => {
-      // Get the current session (Supabase v2)
       const { data: { session } } = await supabase.auth.getSession();
       const user = session?.user;
 
       if (user) {
         setUserEmail(user.email);
 
-        // Try to get full name from metadata
         const name =
           user.user_metadata?.full_name ||
-          `${user.user_metadata?.first_name || ""} ${user.user_metadata?.last_name || ""}`.trim();
+          `${user.user_metadata?.first_name || ""} ${
+            user.user_metadata?.last_name || ""
+          }`.trim();
 
         setUserName(name || "User");
+
+        setProfileUrl(user.user_metadata?.avatar_url);
       }
     };
 
     getUserInfo();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        const user = session.user;
-        setUserEmail(user.email);
-        const name =
-          user.user_metadata?.full_name ||
-          `${user.user_metadata?.first_name || ""} ${user.user_metadata?.last_name || ""}`.trim();
-        setUserName(name || "User");
-      } else {
-        setUserName("");
-        setUserEmail("");
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (session?.user) {
+          const user = session.user;
+          setUserEmail(user.email);
+          const name =
+            user.user_metadata?.full_name ||
+            `${user.user_metadata?.first_name || ""} ${
+              user.user_metadata?.last_name || ""
+            }`.trim();
+          setUserName(name || "User");
+
+          setProfileUrl(user.user_metadata?.avatar_url);
+        } else {
+          setUserName("");
+          setUserEmail("");
+          setProfileUrl("");
+        }
       }
-    });
+    );
 
     return () => {
       subscription.unsubscribe();
@@ -59,12 +68,8 @@ function Sidebar({ isOpen, setIsOpen }) {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-
-      // Optionally clear local storage or other app state
       localStorage.clear();
       sessionStorage.clear();
-
-      // Navigate back to login
       navigate("/login", { replace: true });
     } catch (error) {
       console.error("Error signing out:", error.message);
@@ -159,7 +164,6 @@ function Sidebar({ isOpen, setIsOpen }) {
               <img src={savedIcon} alt="Policies" className="w-6 h-6 mr-2" />
               {isOpen && "Policies"}
             </li>
-
           </ul>
         </nav>
       </div>
@@ -174,7 +178,7 @@ function Sidebar({ isOpen, setIsOpen }) {
         >
           <div className="flex-shrink-0 w-10 h-10">
             <img
-              src={profilePic}
+              src={profileUrl}
               alt="Profile"
               className="w-10 h-10 rounded-full border-2 border-white object-cover"
             />
