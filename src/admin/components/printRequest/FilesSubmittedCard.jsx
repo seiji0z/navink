@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '../../../assets/images/navink-logo.png';
+import fileIcon from '../../../assets/icons/file-queue-icon.png';
 
 function FilesSubmittedCard({ files }) {
   return (
@@ -8,7 +8,7 @@ function FilesSubmittedCard({ files }) {
       {files.map((file, index) => (
         <div key={index} className="flex items-center justify-between bg-white rounded-lg p-3 border mb-2">
           <div className="flex items-center gap-3">
-            <img src={logo} alt="PDF" className="w-10 h-10 rounded" />
+            <img src={fileIcon} alt="PDF" className="w-10 h-10 rounded" />
             <div>
               <p className="font-medium text-gray-900">{file.name}</p>
               <p className="text-xs text-gray-500">{file.size}</p>

@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; 
-import logo from "../../../assets/images/navink-logo.png";
+import logo from "../../../assets/icons/profile-icon.svg";
 
 function PendingPrintRequestsCard() {
   const navigate = useNavigate(); 

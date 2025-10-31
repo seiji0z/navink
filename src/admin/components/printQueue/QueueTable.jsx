@@ -1,5 +1,5 @@
 import React from "react";
-import avatarPlaceholder from "../../../assets/images/navink-logo.png";
+import avatarPlaceholder from "../../../assets/icons/profile-icon.svg";
 
 function QueueTable({ jobs }) {
   

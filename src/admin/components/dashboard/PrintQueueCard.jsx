@@ -1,9 +1,8 @@
 import React from "react";
-import logo from "../../../assets/images/navink-logo.png";
-import { useNavigate } from "react-router-dom";
+import logo from "../../../assets/icons/profile-icon.svg";
+import { Link } from "react-router-dom";
 
 function PrintQueueCard() {
-  const navigate = useNavigate(); 
   const queue = [
     {
       jobId: "#001",
@@ -40,12 +39,12 @@ function PrintQueueCard() {
         >
           Print Queue
         </h3>
-        <button
-          onClick={() => navigate("/admin/queue")}
+        <Link
+          to="/admin/queue"
           className="text-sm text-sky-600 hover:underline"
         >
           View All
-        </button>
+        </Link>
       </div>
 
       <div className="overflow-x-auto">

@@ -1,5 +1,6 @@
 import React from 'react';
-import logo from '../../../assets/images/navink-logo.png';
+import approveIcon from '../../../assets/icons/approve-icon.svg';
+import declineIcon from '../../../assets/icons/decline-icon.svg';
 
 function ActionsCard({ onApprove, onDecline }) {
   return (
@@ -18,13 +19,13 @@ function ActionsCard({ onApprove, onDecline }) {
           onClick={onApprove}
           className="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 rounded-lg flex items-center justify-center gap-2 transition"
         >
-          <img src={logo} alt="Approve" className="w-5 h-5" /> Approve Request
+          <img src={approveIcon} alt="Approve" className="w-5 h-5" /> Approve Request
         </button>
         <button 
           onClick={onDecline}
           className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 rounded-lg flex items-center justify-center gap-2 transition"
         >
-          <img src={logo} alt="Decline" className="w-5 h-5" /> Decline Request
+          <img src={declineIcon} alt="Decline" className="w-5 h-5" /> Decline Request
         </button>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import avatarPlaceholder from '../../../assets/images/navink-logo.png';
+import avatarPlaceholder from '../../../assets/icons/profile-icon.svg';
 
 function PendingRequestsTable({ requests, onApprove = () => {}, onDecline = () => {} }) {
   const navigate = useNavigate();

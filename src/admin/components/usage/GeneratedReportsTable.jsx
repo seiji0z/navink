@@ -1,5 +1,6 @@
 import React from 'react';
-import logo from '../../../assets/images/navink-logo.png';
+import fileDownloadIcon from '../../../assets/icons/file-download-icon.svg';
+import trashIcon from '../../../assets/icons/trash-icon.svg';
 
 function GeneratedReportsTable({ reports }) {
   return (
@@ -28,11 +29,11 @@ function GeneratedReportsTable({ reports }) {
                   <div className="flex justify-center gap-4">
                     {/* Download */}
                     <button className="text-sky-600 hover:text-sky-700 transition">
-                      <img src={logo} alt="Download" className="w-5 h-5 object-contain" />
+                      <img src={fileDownloadIcon} alt="Download" className="w-5 h-5 object-contain" />
                     </button>
                     {/* Delete */}
                     <button className="text-red-600 hover:text-red-700 transition">
-                      <img src={logo} alt="Delete" className="w-5 h-5 object-contain" />
+                      <img src={trashIcon} alt="Delete" className="w-5 h-5 object-contain" />
                     </button>
                   </div>
                 </td>

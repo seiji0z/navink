@@ -6,7 +6,7 @@ import StudentInfoCard from "../components/printRequest/StudentInfoCard";
 import PrintSettingsCard from "../components/printRequest/PrintSettingsCard";
 import FilesSubmittedCard from "../components/printRequest/FilesSubmittedCard";
 import DocumentPreviewCard from "../components/printRequest/DocumentPreviewCard";
-import logo from "../../assets/images/navink-logo.png";
+
 
 function PrintRequest() {
   const location = useLocation();
@@ -48,20 +48,20 @@ function PrintRequest() {
   };
 
   return (
-    <div className="fade-in flex min-h-screen bg-sky-100">
+    <div className="fade-in flex h-screen overflow-hidden bg-sky-100">
       <AdminSidebar isOpen={true} setIsOpen={() => {}} />
 
       {/* Center Container */}
-      <main className="flex-1 flex items-center justify-center p-8">
-        <div className="bg-white rounded-3xl shadow-md p-6 max-w-5xl w-full">
+      <main className="flex-1 p-8 overflow-hidden">
+        <div className="bg-white rounded-3xl shadow-md p-6 w-full h-full overflow-y-auto">
           {/* Header */}
           <div className="flex justify-between items-center mb-6 border-b pb-4">
             <h1 className="text-2xl font-bold text-gray-800">Review Print Request</h1>
             <button
               onClick={handleBack}
-              className="text-gray-500 hover:text-gray-700 transition"
+              className="bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-medium px-4 py-2 rounded-lg transition shadow-sm"
             >
-              <img src={logo} alt="Close" className="w-6 h-6" />
+              Back
             </button>
           </div>
 
