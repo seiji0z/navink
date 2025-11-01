@@ -105,33 +105,32 @@ function PrintRequest() {
     sided: "N/A", 
     tokenCost: request.tokens_deducted,
   };
-
-  // --- Download Handler ---
+  
+  // --- Download Logic ---
   const handleDownload = async () => {
     setLoading(true);
-    
-    const filePath = `${request.studentId}/${request.document}`; 
-    
-    // Get a signed URL with the 'download' attribute
+    setError(null);
+
+    const filePath = `${request.studentId}/${request.document}`;
+    console.log("📄 Attempting to sign for download:", filePath);
+
     const { data, error } = await supabase.storage
       .from("print-files")
-      .createSignedUrl(filePath, 60, { download: true });
+      .createSignedUrl(filePath, 60, {
+        download: true,
+      });
 
-    if (error) {
-      setError("Failed to get download link: " + error.message);
-      alert("Failed to get download link: " + error.message);
-    } else {
-      // Create a temporary link to trigger the download
-      const link = document.createElement('a');
-      link.href = data.signedUrl;
-
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+    if (error || !data?.signedUrl) {
+      alert("Failed to create signed URL: " + (error?.message || "Unknown error"));
+      setLoading(false);
+      return;
     }
-    setLoading(false);
+
+    window.location.assign(data.signedUrl);
+
+    setTimeout(() => setLoading(false), 1000);
   };
-  
+
   // Create the files array for the child component
   const files = [
     {
