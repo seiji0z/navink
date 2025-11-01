@@ -1,5 +1,6 @@
 import React from "react";
-import logo from "../../../assets/images/navink-logo.png";
+import logo from "../../../assets/icons/profile-icon.svg";
+import { Link } from "react-router-dom";
 
 function PrintQueueCard() {
   const queue = [
@@ -38,7 +39,12 @@ function PrintQueueCard() {
         >
           Print Queue
         </h3>
-        <button className="text-sm text-sky-600 hover:underline">View All</button>
+        <Link
+          to="/admin/queue"
+          className="text-sm text-sky-600 hover:underline"
+        >
+          View All
+        </Link>
       </div>
 
       <div className="overflow-x-auto">
@@ -53,7 +59,7 @@ function PrintQueueCard() {
             </tr>
           </thead>
           <tbody>
-            {queue.map((job, idx) => (
+            {queue.slice(0, 3).map((job, idx) => (
               <tr key={idx} className="border-b last:border-none">
                 <td className="py-3">{job.jobId}</td>
                 <td>{job.document}</td>

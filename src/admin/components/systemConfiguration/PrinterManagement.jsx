@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import logo from "../../../assets/images/navink-logo.png"; 
+import logo from "../../../assets/icons/toggle-icon.svg";
 
 function PrinterManagement() {
-  const [isPrinterOpen, setIsPrinterOpen] = useState(true);
+  const [isPrinterOpen, setIsPrinterOpen] = useState(false);
 
   return (
     <div className="border border-gray-200 rounded-2xl overflow-hidden">
@@ -16,9 +16,7 @@ function PrinterManagement() {
         <img
           src={logo}
           alt="Toggle"
-          className={`w-5 h-5 transition-transform ${
-            isPrinterOpen ? "rotate-180" : ""
-          }`}
+          className={`w-5 h-5 transition-transform ${isPrinterOpen ? "rotate-180" : ""}`}
         />
       </button>
 

@@ -25,7 +25,7 @@ function Configuration() {
   ];
 
   return (
-    <div className="fade-in flex min-h-screen bg-sky-100">
+    <div className="fade-in flex h-screen bg-sky-100 overflow-hidden">
       <AdminSidebar isOpen={isOpen} setIsOpen={setIsOpen} />
 
       {/* Main Content */}
@@ -36,15 +36,21 @@ function Configuration() {
         </h1>
 
         {/* White Card */}
-        <div className="bg-white rounded-3xl p-6 shadow-md flex-1 overflow-hidden flex flex-col space-y-6">
+        <div className="bg-white rounded-3xl p-6 shadow-md flex-1 overflow-y-auto flex flex-col">
           {/* Print Details Component */}
-          <PrintDetailsSettings />
+          <div className="mb-6">
+            <PrintDetailsSettings />
+          </div>
 
           {/* Printer Management Component */}
-          <PrinterManagement />
+          <div className="mb-6">
+            <PrinterManagement />
+          </div>
 
           {/* Audit Log Component */}
-          <AuditLog auditLogs={auditLogs} />
+          <div>
+            <AuditLog auditLogs={auditLogs} />
+          </div>
         </div>
       </main>
     </div>

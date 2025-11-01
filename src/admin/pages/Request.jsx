@@ -1,49 +1,140 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import AdminSidebar from "../components/AdminSidebar";
-import avatarPlaceholder from "../../assets/images/navink-logo.png";
+import PendingRequestsTable from "../components/printRequest/PendingRequestsTable";
+import { supabase } from "../../../supabaseClient"; // <-- IMPORT SUPABASE
+
+// Helper function to format time
+const formatTimeAgo = (timestamp) => {
+  const now = new Date();
+  const past = new Date(timestamp);
+  const seconds = Math.floor((now - past) / 1000);
+
+  let interval = seconds / 31536000;
+  if (interval > 1) return Math.floor(interval) + " years ago";
+  interval = seconds / 2592000;
+  if (interval > 1) return Math.floor(interval) + " months ago";
+  interval = seconds / 86400;
+  if (interval > 1) return Math.floor(interval) + " days ago";
+  interval = seconds / 3600;
+  if (interval > 1) return Math.floor(interval) + " hours ago";
+  interval = seconds / 60;
+  if (interval > 1) return Math.floor(interval) + " minutes ago";
+  return Math.floor(seconds) + " seconds ago";
+};
 
 function Request() {
   const [isOpen, setIsOpen] = useState(true);
-  const navigate = useNavigate();
+  const [requests, setRequests] = useState([]); // <-- MODIFIED: Start with empty array
+  const [loading, setLoading] = useState(true); // <-- MODIFIED: Add loading state
+  const [error, setError] = useState(null); // <-- MODIFIED: Add error state
 
-  const requests = [
-    {
-      id: 1,
-      studentName: "Gabriel Flores",
-      studentId: "220057@slu.edu.ph",
-      document: "Final_Thesis.pdf",
-      submitted: "41 mins ago",
-      status: "Pending",
-    },
-    {
-      id: 2,
-      studentName: "Gabriel Flores",
-      studentId: "220057@slu.edu.ph",
-      document: "Final_Thesis.pdf",
-      submitted: "41 mins ago",
-      status: "Pending",
-    },
-    {
-      id: 3,
-      studentName: "Gabriel Flores",
-      studentId: "220057@slu.edu.ph",
-      document: "Final_Thesis.pdf",
-      submitted: "41 mins ago",
-      status: "Pending",
-    },
-    {
-      id: 4,
-      studentName: "Gabriel Flores",
-      studentId: "220057@slu.edu.ph",
-      document: "Final_Thesis.pdf",
-      submitted: "41 mins ago",
-      status: "Pending",
-    },
-  ];
+  // <-- MODIFIED: Fetch data on component mount -->
+  useEffect(() => {
+    fetchRequests();
+  }, []);
 
-  const handleViewDetails = (req) => {
-    navigate(`/print-request/${req.id}`, { state: req });
+  async function fetchRequests() {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("print_request")
+      .select(
+        `
+        request_id,
+        file_name,
+        datetime_requested,
+        paper_size,
+        num_pages,
+        num_copies,
+        print_type,
+        student (
+          user_id,
+          full_name,
+          profile_photo
+        ),
+        print_transaction!inner (
+          transaction_id,
+          status,
+          tokens_deducted
+        )
+      `
+      )
+      .eq("print_transaction.status", "Pending") // Only fetch pending requests
+      .order("datetime_requested", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching requests:", error);
+      setError(error.message);
+    } else {
+      // Format data for both list and detail page
+      const formattedRequests = data.map((req) => ({
+        id: req.request_id,
+        studentName: req.student.full_name,
+        studentId: req.student.user_id, // This is the UUID
+        profilePhoto: req.student.profile_photo,
+        document: req.file_name,
+        submitted: formatTimeAgo(req.datetime_requested), // Format time
+        status: req.print_transaction[0].status,
+        // Extra data to pass to Detail View
+        paper_size: req.paper_size,
+        num_pages: req.num_pages,
+        num_copies: req.num_copies,
+        print_type: req.print_type,
+        tokens_deducted: req.print_transaction[0].tokens_deducted,
+        transaction_id: req.print_transaction[0].transaction_id,
+      }));
+      setRequests(formattedRequests);
+    }
+    setLoading(false);
+  }
+
+  // <-- MODIFIED: Add Supabase logic for quick approve -->
+  const handleApprove = async (req) => {
+    if (!window.confirm("Are you sure you want to approve this request?")) return;
+
+    const { error } = await supabase
+      .from("print_transaction")
+      .update({
+        status: "Approved",
+        datetime_approved: new Date().toISOString(),
+      })
+      .eq("transaction_id", req.transaction_id);
+
+    if (error) {
+      alert("Error approving request: " + error.message);
+    } else {
+      // Remove approved request from the list
+      setRequests((prev) => prev.filter((r) => r.id !== req.id));
+    }
+  };
+
+  // <-- MODIFIED: Add Supabase logic for quick decline -->
+  const handleDecline = async (req) => {
+    const reason = window.prompt(
+      "Please provide a reason for declining this request:"
+    );
+    if (!reason) {
+      alert("A reason is required to decline a request.");
+      return;
+    }
+
+    // 1. Update transaction
+    const { error: transactionError } = await supabase
+      .from("print_transaction")
+      .update({ status: "Declined" })
+      .eq("transaction_id", req.transaction_id);
+
+    // 2. Update remarks
+    const { error: requestError } = await supabase
+      .from("print_request")
+      .update({ remarks: reason })
+      .eq("request_id", req.id);
+
+    if (transactionError || requestError) {
+      alert("Error declining request.");
+    } else {
+      // Remove declined request from the list
+      setRequests((prev) => prev.filter((r) => r.id !== req.id));
+    }
   };
 
   return (
@@ -57,99 +148,20 @@ function Request() {
           Manage Print Request
         </h1>
 
-        {/* White Card */}
-        <div className="bg-white rounded-3xl p-6 shadow-md flex-1 overflow-hidden flex flex-col">
-          <h2 className="text-lg font-semibold text-gray-700 mb-4">
-            Pending Print Requests
-          </h2>
-
-          {/* Table */}
-          <div className="overflow-x-auto flex-1">
-            <table className="w-full text-sm text-left border-collapse">
-              <thead>
-                <tr className="text-gray-500 border-b">
-                  <th className="pb-3 font-medium w-1/5">Student</th>
-                  <th className="pb-3 font-medium w-1/5">Document</th>
-                  <th className="pb-3 font-medium w-1/5">Submitted</th>
-                  <th className="pb-3 font-medium w-1/5">Status</th>
-                  <th className="pb-3 font-medium w-1/5">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {requests.map((req) => (
-                  <tr
-                    key={req.id}
-                    className="border-b hover:bg-gray-50 transition"
-                  >
-                    {/* Student */}
-                    <td className="py-4 w-1/5">
-                      <div className="flex items-center space-x-3">
-                        <img
-                          src={avatarPlaceholder}
-                          alt={req.studentName}
-                          className="w-10 h-10 rounded-full object-cover border border-gray-200"
-                        />
-                        <div>
-                          <p className="font-medium text-gray-900">
-                            {req.studentName}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            {req.studentId}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-
-                    {/* Document */}
-                    <td className="py-4 w-1/5 text-gray-700 font-medium">
-                      {req.document}
-                    </td>
-
-                    {/* Submitted */}
-                    <td className="py-4 w-1/5 text-gray-600">
-                      {req.submitted}
-                    </td>
-
-                    {/* Status */}
-                    <td className="py-4 w-1/5">
-                      <span className="inline-flex items-center bg-yellow-100 text-yellow-700 text-xs font-semibold px-3 py-1.5 rounded-full">
-                        {req.status}
-                      </span>
-                    </td>
-
-                    {/* Actions */}
-                    <td className="py-4 w-1/5 pr-4">
-                      <div className="flex justify-end gap-2">
-                        <button className="bg-green-600 hover:bg-green-700 text-white text-xs font-medium px-4 py-2 rounded-lg transition shadow-sm">
-                          Approve
-                        </button>
-                        <button className="bg-red-600 hover:bg-red-700 text-white text-xs font-medium px-4 py-2 rounded-lg transition shadow-sm">
-                          Decline
-                        </button>
-                        <button
-                          onClick={() => handleViewDetails(req)}
-                          className="bg-sky-600 hover:bg-sky-700 text-white text-xs font-medium px-4 py-2 rounded-lg transition shadow-sm"
-                        >
-                          View Details
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Footer */}
-          <div className="mt-4 flex justify-between items-center text-sm text-gray-500">
-            <span>Showing {requests.length} pending request(s)</span>
-            <div className="flex items-center gap-1">
-              <button className="border rounded-md px-3 py-1.5 text-gray-600 hover:bg-gray-100 text-xs transition">
-                1
-              </button>
-            </div>
-          </div>
-        </div>
+        {/* <-- MODIFIED: Pass loading/error states and real data --> */}
+        {loading && (
+          <div className="text-center p-8">Loading requests...</div>
+        )}
+        {error && (
+          <div className="text-center p-8 text-red-500">Error: {error}</div>
+        )}
+        {!loading && !error && (
+          <PendingRequestsTable
+            requests={requests}
+            onApprove={handleApprove}
+            onDecline={handleDecline}
+          />
+        )}
       </main>
     </div>
   );

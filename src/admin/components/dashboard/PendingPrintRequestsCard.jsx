@@ -1,7 +1,10 @@
 import React from "react";
-import logo from "../../../assets/images/navink-logo.png";
+import { useNavigate } from "react-router-dom"; 
+import logo from "../../../assets/icons/profile-icon.svg";
 
 function PendingPrintRequestsCard() {
+  const navigate = useNavigate(); 
+
   const requests = [
     {
       student: "Gabriel Flores",
@@ -56,7 +59,12 @@ function PendingPrintRequestsCard() {
         >
           Pending Print Requests
         </h3>
-        <button className="text-sm text-sky-600 hover:underline">View All</button>
+        <button
+          onClick={() => navigate("/admin/requests")}
+          className="text-sm text-sky-600 hover:underline"
+        >
+          View All
+        </button>
       </div>
 
       <div className="overflow-x-auto">
@@ -71,7 +79,7 @@ function PendingPrintRequestsCard() {
             </tr>
           </thead>
           <tbody>
-            {requests.map((req, idx) => (
+            {requests.slice(0, 3).map((req, idx) => (
               <tr key={idx} className="border-b last:border-none">
                 <td className="py-3 flex items-center space-x-2">
                   <img src={logo} alt="User" className="w-6 h-6 rounded-full" />

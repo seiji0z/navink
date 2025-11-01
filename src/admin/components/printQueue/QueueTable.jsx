@@ -1,5 +1,5 @@
 import React from "react";
-import avatarPlaceholder from "../../../assets/images/navink-logo.png";
+import avatarPlaceholder from "../../../assets/icons/profile-icon.svg";
 
 function QueueTable({ jobs }) {
   
@@ -17,7 +17,7 @@ function QueueTable({ jobs }) {
   };
 
   return (
-    <div className="flex-1 flex flex-col">
+    <div className="flex flex-col">
       {/* Table Title */}
       <h2 className="text-lg font-semibold text-gray-700 mb-4">Print Jobs</h2>
 
