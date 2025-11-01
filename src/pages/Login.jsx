@@ -71,7 +71,8 @@ function Login() {
             .insert({
               user_id: userId,
               full_name: fullName,
-              profile_photo: profilePhoto
+              profile_photo: profilePhoto,
+              email: user.email
             });
 
           if (insertError) {
