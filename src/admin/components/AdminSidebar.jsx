@@ -16,54 +16,58 @@ function AdminSidebar({ isOpen, setIsOpen }) {
   const [userEmail, setUserEmail] = useState("");
 
   useEffect(() => {
-    const getUserInfo = async () => {
-      // Get the current session (Supabase v2)
-      const { data: { session } } = await supabase.auth.getSession();
-      const user = session?.user;
+    const fetchStaffProfile = async (user) => {
+      if (!user) {
+        setUserName("");
+        setUserEmail("");
+        return;
+      }
 
-      if (user) {
-        setUserEmail(user.email);
+      setUserEmail(user.email);
+      
+      // Query the 'staff' table using the user's ID
+      const { data: staffData, error } = await supabase
+        .from("staff")
+        .select("full_name") 
+        .eq("user_id", user.id) 
+        .single(); 
 
-        // Try to get full name from metadata
-        const name =
-          user.user_metadata?.full_name ||
-          `${user.user_metadata?.first_name || ""} ${user.user_metadata?.last_name || ""}`.trim();
+      if (error) {
+        console.error("Error fetching staff profile:", error.message);
+      }
 
-        setUserName(name || "User");
+      if (staffData) {
+        setUserName(staffData.full_name); 
+      } else {
+        setUserName("Administrator"); 
       }
     };
 
-    getUserInfo();
+    //  Get user on initial load
+    const getInitialSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      await fetchStaffProfile(session?.user);
+    };
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        const user = session.user;
-        setUserEmail(user.email);
-        const name =
-          user.user_metadata?.full_name ||
-          `${user.user_metadata?.first_name || ""} ${user.user_metadata?.last_name || ""}`.trim();
-        setUserName(name || "User");
-      } else {
-        setUserName("");
-        setUserEmail("");
+    getInitialSession();
+
+    // Listen for auth changes (login/logout)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        fetchStaffProfile(session?.user);
       }
-    });
+    );
 
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
-
+  }, []); 
   const handleLogout = async () => {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-
-      // Optionally clear local storage or other app state
       localStorage.clear();
       sessionStorage.clear();
-
-      // Navigate back to login
       navigate("/login", { replace: true });
     } catch (error) {
       console.error("Error signing out:", error.message);
@@ -190,7 +194,7 @@ function AdminSidebar({ isOpen, setIsOpen }) {
         >
           <div className="flex-shrink-0 w-10 h-10">
             <img
-              src={logo}
+              src={logo} // You might want to change this to a dynamic profile photo later
               alt="Admin Profile"
               className="w-10 h-10 rounded-full border-2 border-white object-cover"
             />
@@ -200,7 +204,7 @@ function AdminSidebar({ isOpen, setIsOpen }) {
               <p className="font-semibold text-white leading-tight">
                 {userName || "Loading..."}
               </p>
-              <p className="text-xs text-gray-300 leading-tight">
+              <p className="text-xs text-gray-300 leading-tight truncate max-w-[150px]">
                 {userEmail || ""}
               </p>
             </div>
