@@ -12,7 +12,7 @@ const Stepper = ({ steps, currentStep }) => {
             {/* Step Circle */}
             <div
               className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold z-10
-                ${isActive ? "bg-sky-500 text-white" : "bg-gray-300 text-gray-600"}`}
+                ${isActive ? "bg-sky-500 text-white" : "bg-white border-2 border-sky-500 text-gray-600"}`}
             >
               {stepNum}
             </div>

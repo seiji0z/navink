@@ -34,13 +34,15 @@ function PendingRequestsTable({ requests, onApprove = () => {}, onDecline = () =
                 <td className="py-4 w-1/5">
                   <div className="flex items-center space-x-3">
                     <img
-                      src={avatarPlaceholder}
+                      src={req.profilePhoto || avatarPlaceholder}
                       alt={req.studentName}
                       className="w-10 h-10 rounded-full object-cover border border-gray-200"
                     />
-                    <div>
+                    <div> 
                       <p className="font-medium text-gray-900">{req.studentName}</p>
-                      <p className="text-xs text-gray-500">{req.studentId}</p>
+                      <p className="text-xs text-gray-500 truncate max-w-[150px]">
+                        {req.studentEmail}
+                      </p>
                     </div>
                   </div>
                 </td>
@@ -55,7 +57,7 @@ function PendingRequestsTable({ requests, onApprove = () => {}, onDecline = () =
                   </span>
                 </td>
                 {/* Actions */}
-                <td className="py-4 w-1/5 pr-4">
+                <td className="py-4 w-1/Do5 pr-4">
                   <div className="flex justify-end gap-2">
                     <button
                       onClick={() => onApprove(req)}
