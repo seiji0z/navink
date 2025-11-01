@@ -1,7 +1,43 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { supabase } from "../../../supabaseClient"; // ✅ adjust path if needed
 import files from "../../../assets/icons/file-icon.png";
 
 function PendingRequestsCard() {
+  const [pendingCount, setPendingCount] = useState(0);
+
+  useEffect(() => {
+    fetchPendingCount();
+
+    // ✅ Optional: real-time updates if you want live changes
+    const channel = supabase
+      .channel("pending-requests-listener")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "print_transaction" },
+        (payload) => {
+          fetchPendingCount();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  const fetchPendingCount = async () => {
+    const { count, error } = await supabase
+      .from("print_transaction")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "Pending");
+
+    if (error) {
+      console.error("Error fetching pending count:", error.message);
+    } else {
+      setPendingCount(count || 0);
+    }
+  };
+
   return (
     <div className="bg-white rounded-2xl p-6 shadow flex justify-between items-center w-full">
       {/* Left Side */}
@@ -16,7 +52,7 @@ function PendingRequestsCard() {
           className="text-5xl font-bold text-yellow-500"
           style={{ fontFamily: "Urbanist-Bold, sans-serif" }}
         >
-          18
+          {pendingCount}
         </p>
         <p className="text-xs text-gray-400 mt-1">Requests to be reviewed</p>
       </div>

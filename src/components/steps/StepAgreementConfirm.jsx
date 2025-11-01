@@ -32,7 +32,7 @@ const StepAgreementConfirm = ({ onBack, onFinish, data, user, student, setStuden
     setProcessing(true);
     setError(null);
 
-    const filename = data.file.name || `upload-${Date.now()}`;
+    const filename = data.file.name;
     const filePath = `${user.id}/${Date.now()}-${filename}`;
 
     const copies = parseInt(data.copies || 1, 10);
