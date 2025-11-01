@@ -123,7 +123,7 @@ export default function PrintFiles() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="fade-in flex min-h-screen bg-sky-100">
 <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
 <main className="flex-1 p-6 flex flex-col relative overflow-y-auto">
         <h2 className="text-2xl font-semibold text-navi mb-4">Print Files</h2>
