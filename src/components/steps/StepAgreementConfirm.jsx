@@ -33,7 +33,7 @@ const StepAgreementConfirm = ({ onBack, onFinish, data, user, student, setStuden
     setError(null);
 
     const filename = data.file.name;
-    const filePath = `${user.id}/${Date.now()}-${filename}`;
+    const filePath = `${user.id}/${filename}`;
 
     const copies = parseInt(data.copies || 1, 10);
     const totalPages =
