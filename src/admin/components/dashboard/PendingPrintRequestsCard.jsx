@@ -51,7 +51,7 @@ function PendingPrintRequestsCard() {
   };
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow w-full h-80 flex flex-col">
+    <div className="bg-white rounded-2xl p-6 shadow w-full h-full flex flex-col">
       <div className="flex justify-between items-center mb-4">
         <h3
           className="text-lg font-medium text-gray-500"
@@ -67,34 +67,34 @@ function PendingPrintRequestsCard() {
         </button>
       </div>
 
-      <div className="flex-1">
+      <div className="overflow-x-auto">
         <table className="w-full text-sm text-gray-700">
           <thead>
             <tr className="border-b">
-              <th className="text-left py-2 px-2">Student</th>
-              <th className="text-left py-2 px-2">Document</th>
-              <th className="text-left py-2 px-2">Submitted</th>
-              <th className="text-left py-2 px-2">Status</th>
-              <th className="text-center py-2 px-2">Actions</th>
+              <th className="text-left py-2">Student</th>
+              <th className="text-left py-2">Document</th>
+              <th className="text-left py-2">Submitted</th>
+              <th className="text-left py-2">Status</th>
+              <th className="text-left py-2">Actions</th>
             </tr>
           </thead>
           <tbody>
             {requests.slice(0, 3).map((req, idx) => (
               <tr key={idx} className="border-b last:border-none">
-                <td className="py-3 px-2 flex items-center space-x-2">
+                <td className="py-3 flex items-center space-x-2">
                   <img src={logo} alt="User" className="w-6 h-6 rounded-full" />
                   <span>{req.student}</span>
                 </td>
-                <td className="py-3 px-2">{req.document}</td>
-                <td className="py-3 px-2">{req.submitted}</td>
-                <td className="py-3 px-2">
+                <td>{req.document}</td>
+                <td>{req.submitted}</td>
+                <td>
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-medium ${statusColor[req.status]}`}
                   >
                     {req.status}
                   </span>
                 </td>
-                <td className="py-3 px-2 text-center space-x-2">
+                <td className="space-x-2">
                   <button className="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-xs hover:bg-green-200 transition">
                     Approve
                   </button>

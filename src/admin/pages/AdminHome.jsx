@@ -10,12 +10,12 @@ function AdminHome() {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <div className="fade-in flex h-screen bg-sky-100 overflow-hidden">
+    <div className="fade-in flex min-h-screen bg-sky-100">
       {/* Sidebar */}
       <AdminSidebar isOpen={isOpen} setIsOpen={setIsOpen} />
 
       {/* Main Content */}
-      <main className="flex-1 p-8 flex flex-col relative">
+      <main className="flex-1 p-8 flex flex-col relative overflow-hidden">
         {/* Welcome Header */}
         <div className="mb-8">
           <h2
@@ -40,13 +40,9 @@ function AdminHome() {
         </div>
 
         {/* Bottom Row – Requests and Queue */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1">
-          <div className="lg:col-span-7">
-            <PendingPrintRequestsCard />
-          </div>
-          <div className="lg:col-span-5">
-            <PrintQueueCard />
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 items-stretch">
+          <PendingPrintRequestsCard />
+          <PrintQueueCard />
         </div>
       </main>
     </div>
