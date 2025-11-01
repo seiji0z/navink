@@ -6,6 +6,7 @@ import searchIcon from "../assets/icons/search-icon.png";
 import calendarIcon from "../assets/icons/calendar-icon.png";
 import pendingIcon from "../assets/icons/pending-icon.png";
 import completeIcon from "../assets/icons/complete-icon.png";
+import errorIcon from "../assets/icons/declined-icon.png"; 
 
 function HistoryPage() {
   const [isOpen, setIsOpen] = useState(true);
@@ -62,12 +63,12 @@ function HistoryPage() {
             date: new Date(
               item.print_request?.datetime_requested
             ).toLocaleString(),
-            status:
+            status: // Simplified logic:
               item.status === "Collected" || item.status === "Printed"
                 ? "Complete"
                 : item.status === "Approved" || item.status === "Pending"
                 ? "Pending"
-                : item.status || "Pending",
+                : item.status, // Pass "Declined", "Cancelled" as-is
             pages: item.print_request?.num_pages || 0,
             token: item.tokens_deducted || 0,
           }));
@@ -98,6 +99,33 @@ function HistoryPage() {
       </div>
     );
   }
+
+  // Helper to render status badges
+  const renderStatusBadge = (status) => {
+    if (status === "Pending") {
+      return (
+        <span className="inline-flex items-center bg-orange-100 text-orange-700 text-xs font-semibold px-2 py-1 rounded-lg">
+          <img src={pendingIcon} alt="Pending" className="w-3 h-3 mr-1" />
+          Pending
+        </span>
+      );
+    }
+    if (status === "Complete") {
+      return (
+        <span className="inline-flex items-center bg-green-100 text-green-700 text-xs font-semibold px-2 py-1 rounded-lg">
+          <img src={completeIcon} alt="Complete" className="w-3 h-3 mr-1" />
+          Complete
+        </span>
+      );
+    }
+    // Handle other statuses like Declined or Cancelled
+    return (
+      <span className="inline-flex items-center bg-red-100 text-red-700 text-xs font-semibold px-2 py-1 rounded-lg">
+        <img src={errorIcon} alt="Failed" className="w-3 h-3 mr-1" />
+        {status} {/* This will show "Declined" or "Cancelled" */}
+      </span>
+    );
+  };
 
   return (
     <div className="fade-in flex min-h-screen bg-sky-100">
@@ -141,6 +169,8 @@ function HistoryPage() {
               <option value="All">Filter by Status</option>
               <option value="Pending">Pending</option>
               <option value="Complete">Complete</option>
+              <option value="Declined">Declined</option>
+              <option value="Cancelled">Cancelled</option>
             </select>
           </div>
 
@@ -165,25 +195,7 @@ function HistoryPage() {
                       <td className="py-2">{file.id}</td>
                       <td className="py-2">{file.name}</td>
                       <td className="py-2">
-                        {file.status === "Pending" ? (
-                          <span className="inline-flex items-center bg-orange-100 text-orange-700 text-xs font-semibold px-2 py-1 rounded-lg">
-                            <img
-                              src={pendingIcon}
-                              alt="Pending"
-                              className="w-3 h-3 mr-1"
-                            />
-                            Pending
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center bg-green-100 text-green-700 text-xs font-semibold px-2 py-1 rounded-lg">
-                            <img
-                              src={completeIcon}
-                              alt="Complete"
-                              className="w-3 h-3 mr-1"
-                            />
-                            Complete
-                          </span>
-                        )}
+                        {renderStatusBadge(file.status)}
                       </td>
                       <td className="py-2">{file.pages}</td>
                       <td className="py-2">{file.token}</td>

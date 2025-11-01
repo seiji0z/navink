@@ -32,8 +32,14 @@ const StepAgreementConfirm = ({ onBack, onFinish, data, user, student, setStuden
     setProcessing(true);
     setError(null);
 
-    const filename = data.file.name;
-    const filePath = `${user.id}/${filename}`;
+    // --- FILENAME MODIFICATION ---
+    // 1. Get original name
+    const originalFilename = data.file.name;
+    // 2. Create unique name with timestamp
+    const uniqueFilename = `${Date.now()}-${originalFilename}`;
+    // 3. Create the full path with the unique name
+    const filePath = `${user.id}/${uniqueFilename}`;
+    // --- END MODIFICATION ---
 
     const copies = parseInt(data.copies || 1, 10);
     const totalPages =
@@ -53,7 +59,7 @@ const StepAgreementConfirm = ({ onBack, onFinish, data, user, student, setStuden
       // 1️⃣ Upload file
       const { error: uploadError } = await supabase.storage
         .from("print-files")
-        .upload(filePath, data.file, { upsert: true });
+        .upload(filePath, data.file, { upsert: false }); // Set upsert: false
       if (uploadError) throw uploadError;
 
       // 2️⃣ Create signed URL
@@ -67,7 +73,7 @@ const StepAgreementConfirm = ({ onBack, onFinish, data, user, student, setStuden
       // 3️⃣ RPC payload (matches StepReviewConfirm)
       const rpcParams = {
         p_student_id: user.id,
-        p_file_name: filename,
+        p_file_name: uniqueFilename, // <-- Use unique name
         p_file_url: fileUrl,
         p_copies: copies,
         p_color_mode: data.colorMode || "Black & White",
@@ -106,7 +112,7 @@ const StepAgreementConfirm = ({ onBack, onFinish, data, user, student, setStuden
           .insert([
             {
               student_id: user.id,
-              file_name: filename,
+              file_name: uniqueFilename, // <-- Use unique name
               paper_size: data.paperSize || null,
               num_pages: data.selectedPages?.length || data.totalPages || 1,
               num_copies: data.copies || 1,

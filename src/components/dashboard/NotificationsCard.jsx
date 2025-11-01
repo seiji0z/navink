@@ -31,6 +31,11 @@ function Notifications() {
       bg: "bg-red-50",
       border: "border-red-200",
     },
+    Declined: {
+      color: "text-red-600",
+      bg: "bg-red-50",
+      border: "border-red-200",
+    },
   };
 
   useEffect(() => {
@@ -128,6 +133,8 @@ function Notifications() {
                 ? "You have collected your printed document."
                 : notif.status === "Cancelled"
                 ? "Your print request was cancelled."
+                : notif.status === "Declined"
+                ? "Your print request was declined."
                 : "Your print request is pending approval.";
 
             return (

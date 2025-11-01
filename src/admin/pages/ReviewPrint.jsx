@@ -110,8 +110,7 @@ function PrintRequest() {
   const handleDownload = async () => {
     setLoading(true);
     
-    // RE-ADD the studentId to build the correct path
-    const filePath = `${request.studentId}/${request.document}`; // <-- CORRECT
+    const filePath = `${request.studentId}/${request.document}`; 
     
     // Get a signed URL with the 'download' attribute
     const { data, error } = await supabase.storage
@@ -125,9 +124,6 @@ function PrintRequest() {
       // Create a temporary link to trigger the download
       const link = document.createElement('a');
       link.href = data.signedUrl;
-      
-      // This is simpler and more correct now
-      link.setAttribute('download', request.document); 
 
       document.body.appendChild(link);
       link.click();
