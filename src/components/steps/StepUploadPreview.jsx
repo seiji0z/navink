@@ -106,7 +106,7 @@ const StepUploadPreview = ({ onNext }) => {
 
       <h2 className="text-2xl font-semibold text-sky-700 mb-6">Upload and Preview File</h2>
 
-      <div className="flex flex-col items-center border-2 border-dashed border-sky-300 rounded-xl p-6 hover:bg-sky-50 transition">
+      <div className="flex flex-col items-center border-2 border-dashed border-sky-300 rounded-xl p-28 hover:bg-sky-50 transition">
         <input id="fileUpload" type="file" accept="application/pdf,image/*" onChange={handleFileChange} className="hidden" />
         <label htmlFor="fileUpload" className="cursor-pointer bg-[#1F6D8B] hover:bg-sky-600 text-white px-5 py-2 rounded-md transition">
           Choose File
