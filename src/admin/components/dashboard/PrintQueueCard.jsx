@@ -13,42 +13,20 @@ function PrintQueueCard() {
     Cancelled: "text-red-600",
   };
 
+  // 🔹 Fetch print queue via SQL function (get_approved_queue)
   const fetchQueue = async () => {
     setLoading(true);
     try {
-      // ✅ Fetch queue with related data, only for APPROVED transactions
-      const { data, error } = await supabase
-        .from("print_queue")
-        .select(
-          `
-          queue_id,
-          queue_position,
-          priority,
-          queue_status,
-          datetime_added,
-          request:print_request(
-            file_name,
-            printer:printer_id(printer_name),
-            transaction:print_transaction(status)
-          )
-        `
-        )
-        .order("datetime_added", { ascending: true });
-
+      const { data, error } = await supabase.rpc("get_approved_queue");
       if (error) throw error;
 
-      // ✅ Filter only those with APPROVED transactions
-      const approvedOnly = data.filter(
-        (item) => item.request?.transaction?.[0]?.status === "Approved"
-      );
-
-      // ✅ Renumber dynamically (no need to depend on queue_position in DB)
-      const formatted = approvedOnly.map((item, index) => ({
+      // ✅ Use actual DB values (no forced updates)
+      const formatted = data.map((item, index) => ({
         id: item.queue_id,
-        jobId: `#${String(index + 1).padStart(3, "0")}`,
-        document: item.request?.file_name || "Unnamed File",
-        printer: item.request?.printer?.printer_name || "Unknown Printer",
-        status: item.queue_status,
+        jobId: `#${String(item.queue_position || index + 1).padStart(3, "0")}`,
+        document: item.file_name || "Unnamed File",
+        printer: item.printer_name || "Unknown Printer",
+        status: item.queue_status || "Waiting",
       }));
 
       setQueue(formatted);
@@ -59,19 +37,16 @@ function PrintQueueCard() {
     }
   };
 
+  // 🔹 Real-time subscription for queue updates
   useEffect(() => {
     fetchQueue();
 
-    // ✅ Real-time updates for the queue
     const channel = supabase
       .channel("realtime-print-queue")
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "print_queue" },
-        (payload) => {
-          console.log("🔄 Queue updated:", payload);
-          fetchQueue();
-        }
+        () => fetchQueue()
       )
       .subscribe();
 
@@ -90,7 +65,10 @@ function PrintQueueCard() {
         >
           Print Queue
         </h3>
-        <Link to="/admin/queue" className="text-sm text-sky-600 hover:underline">
+        <Link
+          to="/admin/queue"
+          className="text-sm text-sky-600 hover:underline"
+        >
           View All
         </Link>
       </div>
