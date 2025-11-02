@@ -14,7 +14,6 @@ function PendingPrintRequestsCard() {
     Declined: "bg-red-200 text-red-800",
   };
 
-  // 🔹 Fetch pending print requests
   useEffect(() => {
     fetchPendingRequests();
   }, []);
@@ -22,32 +21,37 @@ function PendingPrintRequestsCard() {
   const fetchPendingRequests = async () => {
     setLoading(true);
 
+    // ✅ Updated join + correct column names
     const { data, error } = await supabase
       .from("print_transaction")
       .select(`
         transaction_id,
         status,
+        datetime_approved,
+        tokens_deducted,
         request:print_request (
           request_id,
           file_name,
+          num_pages,
+          num_copies,
+          paper_size,
+          print_type,
           datetime_requested,
           student:student_id (
             user_id,
             full_name,
+            email,
             course,
             year_level
           )
         )
       `)
       .eq("status", "Pending")
-      .order("datetime_requested", {
-        referencedTable: "print_request",
-        ascending: false,
-      })
+      .order("datetime_requested", { referencedTable: "print_request", ascending: false })
       .limit(5);
 
     if (error) {
-      console.error("Error fetching pending requests:", error);
+      console.error("❌ Error fetching pending requests:", error);
       setRequests([]);
     } else {
       const formatted = data.map((item) => ({
@@ -64,7 +68,6 @@ function PendingPrintRequestsCard() {
     setLoading(false);
   };
 
-  // 🔹 Approve or Deny handler
   const handleStatusUpdate = async (transactionId, newStatus, requestId) => {
     // 1️⃣ Update transaction status
     const { error: txError } = await supabase
@@ -76,15 +79,14 @@ function PendingPrintRequestsCard() {
       .eq("transaction_id", transactionId);
 
     if (txError) {
-      console.error("Error updating status:", txError);
+      console.error("❌ Error updating transaction:", txError);
       alert("Failed to update request status.");
       return;
     }
 
-    // 2️⃣ If Approved — add to print_queue
+    // 2️⃣ If Approved, add to queue
     if (newStatus === "Approved") {
       try {
-        // Get current highest queue position
         const { data: maxData, error: maxError } = await supabase
           .from("print_queue")
           .select("queue_position")
@@ -92,13 +94,10 @@ function PendingPrintRequestsCard() {
           .limit(1)
           .single();
 
-        if (maxError && maxError.code !== "PGRST116") throw maxError; // Ignore 'no rows' error
+        if (maxError && maxError.code !== "PGRST116") throw maxError;
 
-        const nextPosition = maxData?.queue_position
-          ? maxData.queue_position + 1
-          : 1;
+        const nextPosition = maxData?.queue_position ? maxData.queue_position + 1 : 1;
 
-        // Insert into print_queue
         const { error: queueError } = await supabase.from("print_queue").insert([
           {
             request_id: requestId,
@@ -111,9 +110,9 @@ function PendingPrintRequestsCard() {
 
         if (queueError) throw queueError;
 
-        console.log(`✅ Added request ${requestId} to queue at position ${nextPosition}`);
+        console.log(`✅ Added request ${requestId} to print queue.`);
       } catch (err) {
-        console.error("Error adding to print queue:", err);
+        console.error("❌ Error adding to print queue:", err);
       }
     }
 
@@ -123,7 +122,6 @@ function PendingPrintRequestsCard() {
     );
   };
 
-  // 🔹 Helper: time ago formatting
   const timeAgo = (timestamp) => {
     if (!timestamp) return "N/A";
     const diffMs = Date.now() - new Date(timestamp);
@@ -158,31 +156,37 @@ function PendingPrintRequestsCard() {
         <p className="text-gray-500 text-center">No pending print requests.</p>
       ) : (
         <>
-          {/* Mobile list (no horizontal scrolling) */}
+          {/* 📱 Mobile view */}
           <div className="md:hidden space-y-3">
             {requests.slice(0, 3).map((req, idx) => (
               <div key={idx} className="rounded-xl border border-gray-200 p-4">
                 <div className="flex items-start">
-                  <img src={logo} alt="User" className="w-9 h-9 rounded-full object-cover mr-3" />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between">
-                      <p className="font-medium text-gray-900 truncate pr-2">{req.student}</p>
-                      <span className={`ml-2 px-2.5 py-1 rounded-full text-[11px] font-medium whitespace-nowrap ${statusColor[req.status]}`}>
+                  <img src={logo} alt="User" className="w-9 h-9 rounded-full mr-3" />
+                  <div className="flex-1">
+                    <div className="flex justify-between items-start">
+                      <p className="font-medium text-gray-900">{req.student}</p>
+                      <span
+                        className={`ml-2 px-2.5 py-1 rounded-full text-[11px] font-medium ${statusColor[req.status]}`}
+                      >
                         {req.status}
                       </span>
                     </div>
-                    <p className="mt-1 text-sm text-gray-700 truncate">{req.document}</p>
-                    <div className="mt-3 flex items-center justify-between text-xs text-gray-500">
-                      <span className="whitespace-nowrap">{req.submitted}</span>
-                      <div className="flex items-center gap-2">
+                    <p className="mt-1 text-sm text-gray-700">{req.document}</p>
+                    <div className="mt-3 flex justify-between text-xs text-gray-500">
+                      <span>{req.submitted}</span>
+                      <div className="flex gap-2">
                         <button
-                          onClick={() => handleStatusUpdate(req.transactionId, "Approved", req.requestId)}
+                          onClick={() =>
+                            handleStatusUpdate(req.transactionId, "Approved", req.requestId)
+                          }
                           className="px-2.5 py-1 bg-green-100 text-green-700 rounded-md hover:bg-green-200"
                         >
                           Approve
                         </button>
                         <button
-                          onClick={() => handleStatusUpdate(req.transactionId, "Declined", req.requestId)}
+                          onClick={() =>
+                            handleStatusUpdate(req.transactionId, "Declined", req.requestId)
+                          }
                           className="px-2.5 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200"
                         >
                           Deny
@@ -195,45 +199,49 @@ function PendingPrintRequestsCard() {
             ))}
           </div>
 
-          {/* Desktop/tablet table */}
+          {/* 💻 Desktop view */}
           <div className="hidden md:block overflow-x-auto">
-            <table className="min-w-[720px] w-full text-sm text-gray-700 table-auto">
+            <table className="min-w-[720px] w-full text-sm text-gray-700">
               <thead>
                 <tr className="border-b">
-                  <th className="text-left px-4 py-3 text-xs text-gray-500 uppercase tracking-wide">Student</th>
-                  <th className="text-left px-4 py-3 text-xs text-gray-500 uppercase tracking-wide">Document</th>
-                  <th className="text-left px-4 py-3 text-xs text-gray-500 uppercase tracking-wide">Submitted</th>
-                  <th className="text-left px-4 py-3 text-xs text-gray-500 uppercase tracking-wide">Status</th>
-                  <th className="text-left px-4 py-3 text-xs text-gray-500 uppercase tracking-wide">Actions</th>
+                  <th className="px-4 py-3 text-left text-xs text-gray-500 uppercase">Student</th>
+                  <th className="px-4 py-3 text-left text-xs text-gray-500 uppercase">Document</th>
+                  <th className="px-4 py-3 text-left text-xs text-gray-500 uppercase">Submitted</th>
+                  <th className="px-4 py-3 text-left text-xs text-gray-500 uppercase">Status</th>
+                  <th className="px-4 py-3 text-left text-xs text-gray-500 uppercase">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {requests.slice(0, 3).map((req, idx) => (
                   <tr key={idx} className="border-b last:border-none">
-                    <td className="px-4 py-4 align-middle">
-                      <div className="flex items-center space-x-3">
-                        <img src={logo} alt="User" className="w-8 h-8 rounded-full object-cover" />
-                        <div className="min-w-0">
-                          <div className="text-sm font-medium text-gray-800 truncate max-w-[180px]">{req.student}</div>
-                        </div>
+                    <td className="px-4 py-4">
+                      <div className="flex items-center gap-3">
+                        <img src={logo} alt="User" className="w-8 h-8 rounded-full" />
+                        <div className="truncate max-w-[180px]">{req.student}</div>
                       </div>
                     </td>
-                    <td className="px-4 py-4 align-middle max-w-[220px]"><div className="text-sm text-gray-700 truncate">{req.document}</div></td>
-                    <td className="px-4 py-4 align-middle whitespace-nowrap text-gray-500">{req.submitted}</td>
-                    <td className="px-4 py-4 align-middle">
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusColor[req.status]}`}>{req.status}</span>
+                    <td className="px-4 py-4 truncate max-w-[220px]">{req.document}</td>
+                    <td className="px-4 py-4 text-gray-500">{req.submitted}</td>
+                    <td className="px-4 py-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusColor[req.status]}`}>
+                        {req.status}
+                      </span>
                     </td>
-                    <td className="px-4 py-4 align-middle">
-                      <div className="flex items-center space-x-2">
+                    <td className="px-4 py-4">
+                      <div className="flex gap-2">
                         <button
-                          onClick={() => handleStatusUpdate(req.transactionId, "Approved", req.requestId)}
-                          className="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-xs hover:bg-green-200 transition"
+                          onClick={() =>
+                            handleStatusUpdate(req.transactionId, "Approved", req.requestId)
+                          }
+                          className="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-xs hover:bg-green-200"
                         >
                           Approve
                         </button>
                         <button
-                          onClick={() => handleStatusUpdate(req.transactionId, "Declined", req.requestId)}
-                          className="px-3 py-1 bg-red-100 text-red-700 rounded-lg text-xs hover:bg-red-200 transition"
+                          onClick={() =>
+                            handleStatusUpdate(req.transactionId, "Declined", req.requestId)
+                          }
+                          className="px-3 py-1 bg-red-100 text-red-700 rounded-lg text-xs hover:bg-red-200"
                         >
                           Deny
                         </button>
