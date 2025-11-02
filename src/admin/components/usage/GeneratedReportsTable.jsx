@@ -1,8 +1,32 @@
-import React from 'react';
-import fileDownloadIcon from '../../../assets/icons/file-download-icon.svg';
-import trashIcon from '../../../assets/icons/trash-icon.svg';
+import React from "react";
+import { supabase } from "../../../supabaseClient";
+import fileDownloadIcon from "../../../assets/icons/file-download-icon.svg";
+import trashIcon from "../../../assets/icons/trash-icon.svg";
 
-function GeneratedReportsTable({ reports }) {
+function GeneratedReportsTable({ reports, onDelete }) {
+  async function handleDownload(report) {
+    if (!report.file_path) {
+      alert("This report has no downloadable file.");
+      return;
+    }
+
+    const { data, error } = await supabase.storage.from("reports").download(report.file_path);
+    if (error) {
+      console.error("Error downloading file:", error);
+      alert("Failed to download file.");
+      return;
+    }
+
+    const url = URL.createObjectURL(data);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${report.name}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
   return (
     <div className="flex-1 flex flex-col">
       <h2 className="text-lg font-semibold text-gray-700 mb-4">Generated Reports</h2>
@@ -19,20 +43,18 @@ function GeneratedReportsTable({ reports }) {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {reports.map((report, idx) => (
-              <tr key={idx} className="hover:bg-gray-50 transition">
-                <td className="px-4 py-3 font-medium text-gray-900">{report.name}</td>
-                <td className="px-4 py-3 text-gray-700">{report.type}</td>
-                <td className="px-4 py-3 text-gray-700">{report.dateRange}</td>
-                <td className="px-4 py-3 text-gray-600">{report.generatedBy}</td>
+            {reports.map((r, i) => (
+              <tr key={i} className="hover:bg-gray-50 transition">
+                <td className="px-4 py-3 font-medium text-gray-900">{r.name}</td>
+                <td className="px-4 py-3 text-gray-700">{r.type}</td>
+                <td className="px-4 py-3 text-gray-700">{r.dateRange}</td>
+                <td className="px-4 py-3 text-gray-600">{r.generatedBy}</td>
                 <td className="px-4 py-3 text-center">
                   <div className="flex justify-center gap-4">
-                    {/* Download */}
-                    <button className="text-sky-600 hover:text-sky-700 transition">
+                    <button onClick={() => handleDownload(r)} className="text-sky-600 hover:text-sky-700 transition">
                       <img src={fileDownloadIcon} alt="Download" className="w-5 h-5 object-contain" />
                     </button>
-                    {/* Delete */}
-                    <button className="text-red-600 hover:text-red-700 transition">
+                    <button onClick={() => onDelete?.(r)} className="text-red-600 hover:text-red-700 transition">
                       <img src={trashIcon} alt="Delete" className="w-5 h-5 object-contain" />
                     </button>
                   </div>
@@ -41,15 +63,6 @@ function GeneratedReportsTable({ reports }) {
             ))}
           </tbody>
         </table>
-      </div>
-
-      {/* Pagination Footer */}
-      <div className="mt-4 flex justify-center">
-        <div className="flex gap-1">
-          <button className="w-8 h-8 border rounded-md text-xs text-gray-600 hover:bg-gray-100 flex items-center justify-center">1</button>
-          <button className="w-8 h-8 border rounded-md text-xs text-gray-400 bg-gray-100">2</button>
-          <button className="w-8 h-8 border rounded-md text-xs text-gray-400 bg-gray-100">3</button>
-        </div>
       </div>
     </div>
   );

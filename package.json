@@ -15,6 +15,7 @@
     "@tailwindcss/vite": "^4.1.14",
     "css": "^3.0.0",
     "gsap": "^3.13.0",
+    "jspdf": "^3.0.3",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-pdf": "^10.2.0",
