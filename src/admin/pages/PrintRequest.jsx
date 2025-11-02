@@ -15,37 +15,32 @@ function Request() {
       setLoading(true);
       setError(null);
 
-      // Query to get pending transactions and their related request and student info
-      const { data, error } = await supabase
-        .from("print_transaction")
-        .select(
-        `
-          transaction_id,  
-          request_id,
-          status,
-          tokens_deducted, 
-          print_request (
-            request_id,
-            file_name,
-            datetime_requested,
-            paper_size,      
-            num_pages,       
-            num_copies,      
-            print_type,     
-            student (
-              user_id,
-              full_name,
-              profile_photo, 
-              email            
-            )
-          )
-        `
-        )
-        .eq("status", "Pending") // <-- Filter for only 'Pending' requests
-        .order("datetime_requested", {
-          foreignTable: "print_request",
-          ascending: true,
-        }); // <-- Order by oldest first
+    const { data, error } = await supabase
+  .from("print_transaction")
+  .select(`
+    transaction_id,
+    request_id,
+    status,
+    tokens_deducted,
+    print_request:print_request!print_transaction_request_id_fkey (
+      request_id,
+      file_name,
+      datetime_requested,
+      paper_size,
+      num_pages,
+      num_copies,
+      print_type,
+      student (
+        user_id,
+        full_name,
+        profile_photo,
+        email
+      )
+    )
+  `)
+  .eq("status", "Pending")
+  .order("datetime_requested", { foreignTable: "print_request", ascending: true });
+
 
       if (error) {
         console.error("Error fetching requests:", error);
