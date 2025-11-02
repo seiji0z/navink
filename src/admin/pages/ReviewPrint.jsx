@@ -155,9 +155,7 @@ function PrintRequest() {
     const { error } = await supabase.rpc('approve_print_request', {
       p_request_id: request.id,
       p_transaction_id: request.transaction_id,
-      p_student_id: request.studentId, // This is the UUID
-      p_admin_id: adminUser.id,
-      p_tokens_to_deduct: request.tokens_deducted
+      p_admin_id: adminUser.id
     });
 
     if (error) {
@@ -165,7 +163,7 @@ function PrintRequest() {
       alert("Failed to approve: " + error.message);
     } else {
       alert("Request approved successfully!");
-      navigate(-1); // Go back
+      navigate(-1);
     }
     setLoading(false);
   };
