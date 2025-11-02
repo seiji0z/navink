@@ -5,7 +5,7 @@ function PrinterManagement() {
   const [isPrinterOpen, setIsPrinterOpen] = useState(false);
 
   return (
-    <div className="border border-gray-200 rounded-2xl overflow-hidden">
+    <div className="bg-white border border-gray-200 rounded-3xl overflow-hidden shadow-md">
       <button
         onClick={() => setIsPrinterOpen(!isPrinterOpen)}
         className="w-full px-6 py-4 bg-white hover:bg-gray-50 flex items-center justify-between text-left transition"

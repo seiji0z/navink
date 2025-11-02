@@ -4,7 +4,7 @@ function PrintSettingsCard({ settings }) {
   return (
     <div className="bg-gray-50 rounded-2xl p-5">
       <h3 className="font-semibold text-gray-700 mb-3">Print Settings Overview</h3>
-      <div className="grid grid-cols-2 gap-4 text-sm">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
         <div>
           <p className="text-gray-500">Quantity</p>
           <p className="font-medium">{settings.copies} Copies</p>
@@ -22,7 +22,7 @@ function PrintSettingsCard({ settings }) {
           <p className="font-medium">{settings.sided}</p>
         </div>
       </div>
-      <div className="mt-4 pt-4 border-t flex justify-between items-center">
+      <div className="mt-4 pt-4 border-t flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
         <p className="font-semibold text-gray-700">Total Token Cost</p>
         <p className="text-lg font-bold text-sky-600">{settings.tokenCost} Tokens</p>
       </div>

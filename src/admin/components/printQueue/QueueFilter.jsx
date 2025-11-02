@@ -2,21 +2,21 @@ import React from "react";
 
 function QueueFilter({ onSearchChange, onFilterChange, onClear }) {
   return (
-    <div className="mb-6">
+    <div className="bg-white rounded-3xl p-6 shadow-md mb-6">
       <h2 className="text-lg font-semibold text-gray-700 mb-4">
         Filter & Search
       </h2>
-      <div className="flex flex-wrap gap-3 items-center">
+      <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
         <input
           type="text"
           placeholder="Search Job ID or Student Name"
           onChange={(e) => onSearchChange?.(e.target.value)}
-          className="px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sky-300 flex-1 min-w-[200px]"
+          className="w-full sm:flex-1 px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sky-300 min-w-[200px]"
         />
 
         <select
           onChange={(e) => onFilterChange?.("status", e.target.value)}
-          className="px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sky-300 min-w-[160px]"
+          className="w-full sm:w-auto min-w-[160px] px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sky-300"
         >
           <option value="">All Status</option>
           <option value="Printing">Printing</option>
@@ -27,7 +27,7 @@ function QueueFilter({ onSearchChange, onFilterChange, onClear }) {
 
         <select
           onChange={(e) => onFilterChange?.("printer", e.target.value)}
-          className="px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sky-300 min-w-[160px]"
+          className="w-full sm:w-auto min-w-[160px] px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sky-300"
         >
           <option value="">All Printers</option>
           <option value="Open Lab Printer">Open Lab Printer</option>
@@ -36,7 +36,7 @@ function QueueFilter({ onSearchChange, onFilterChange, onClear }) {
 
         <select
           onChange={(e) => onFilterChange?.("department", e.target.value)}
-          className="px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sky-300 min-w-[160px]"
+          className="w-full sm:w-auto min-w-[160px] px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sky-300"
         >
           <option value="">All Departments</option>
           <option value="Computer Science">Computer Science</option>

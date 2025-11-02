@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 
 // Load PDF.js worker from the unpkg CDN
@@ -6,6 +6,21 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 
 function DocumentPreviewCard({ previewUrl }) {
   const [numPages, setNumPages] = useState(null);
+  const containerRef = useRef(null);
+  const [pageWidth, setPageWidth] = useState(400);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (!containerRef.current) return;
+      const w = containerRef.current.clientWidth;
+      // Leave some padding; clamp width for readability
+      const computed = Math.max(260, Math.min(w - 24, 480));
+      setPageWidth(computed);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   function onDocumentLoadSuccess({ numPages: nextNumPages }) {
     setNumPages(nextNumPages);
@@ -21,7 +36,7 @@ function DocumentPreviewCard({ previewUrl }) {
       {/* Set a fixed height and overflow-y-auto.
         This matches the aspect ratio but also allows scrolling for multi-page docs.
       */}
-      <div className="aspect-[17/11] bg-white rounded-lg border overflow-y-auto">
+      <div ref={containerRef} className="bg-white rounded-lg border overflow-y-auto max-h-[65vh]">
         {previewUrl ? (
           <Document
             file={previewUrl}
@@ -49,7 +64,7 @@ function DocumentPreviewCard({ previewUrl }) {
                   pageNumber={pageNumber}
                   renderTextLayer={false}      // Admin doesn't need to select text
                   renderAnnotationLayer={false} // Admin doesn't need annotations
-                  width={400} // A good width for a preview panel
+                  width={pageWidth}
                 />
                 <p className="text-sm text-gray-500 mt-2">
                   Page {pageNumber} of {numPages}

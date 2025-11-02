@@ -73,44 +73,63 @@ function PrintQueueCard() {
         </Link>
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm text-gray-700">
+      {/* Mobile list (no horizontal scrolling) */}
+      {loading ? (
+        <p className="md:hidden text-gray-500 text-center">Loading print queue...</p>
+      ) : queue.length === 0 ? (
+        <p className="md:hidden text-gray-500 text-center">No approved print jobs in queue.</p>
+      ) : (
+        <div className="md:hidden space-y-3">
+          {queue.slice(0, 3).map((job) => (
+            <div key={job.id} className="rounded-xl border border-gray-200 p-4">
+              <div className="flex items-start justify-between">
+                <div className="text-sm font-semibold text-gray-900 mr-3 whitespace-nowrap">{job.jobId}</div>
+                <span className={`ml-2 px-2.5 py-1 rounded-full text-[11px] font-medium whitespace-nowrap ${statusColor[job.status] || "text-gray-600"}`}>
+                  {job.status}
+                </span>
+              </div>
+              <div className="mt-2 text-sm text-gray-800 truncate">{job.document}</div>
+              <div className="mt-1 text-xs text-gray-600 truncate">{job.printer}</div>
+              <div className="mt-3 flex justify-end">
+                <button className="px-3 py-1 bg-sky-100 text-sky-700 rounded-md text-xs hover:bg-sky-200 transition whitespace-nowrap">
+                  View Details
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Desktop/tablet table */}
+      <div className="hidden md:block overflow-x-auto">
+        <table className="min-w-[720px] w-full text-sm text-gray-700 table-auto">
           <thead>
             <tr className="border-b">
-              <th className="text-left py-2">Job ID</th>
-              <th className="text-left py-2">Document</th>
-              <th className="text-left py-2">Printer</th>
-              <th className="text-left py-2">Status</th>
-              <th className="text-left py-2">Actions</th>
+              <th className="text-left px-4 py-3 text-xs text-gray-500 uppercase tracking-wide">Job ID</th>
+              <th className="text-left px-4 py-3 text-xs text-gray-500 uppercase tracking-wide">Document</th>
+              <th className="text-left px-4 py-3 text-xs text-gray-500 uppercase tracking-wide">Printer</th>
+              <th className="text-left px-4 py-3 text-xs text-gray-500 uppercase tracking-wide">Status</th>
+              <th className="text-left px-4 py-3 text-xs text-gray-500 uppercase tracking-wide">Actions</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan="5" className="text-center py-6 text-gray-400">
-                  Loading print queue...
-                </td>
+                <td colSpan="5" className="text-center py-6 text-gray-400">Loading print queue...</td>
               </tr>
             ) : queue.length === 0 ? (
               <tr>
-                <td colSpan="5" className="text-center py-6 text-gray-400">
-                  No approved print jobs in queue.
-                </td>
+                <td colSpan="5" className="text-center py-6 text-gray-400">No approved print jobs in queue.</td>
               </tr>
             ) : (
               queue.slice(0, 3).map((job) => (
                 <tr key={job.id} className="border-b last:border-none">
-                  <td className="py-3">{job.jobId}</td>
-                  <td>{job.document}</td>
-                  <td>{job.printer}</td>
-                  <td className={statusColor[job.status] || "text-gray-600"}>
-                    {job.status}
-                  </td>
-                  <td>
-                    <button className="px-3 py-1 bg-sky-100 text-sky-700 rounded-lg text-xs hover:bg-sky-200 transition">
-                      View Details
-                    </button>
+                  <td className="px-4 py-4 align-middle whitespace-nowrap">{job.jobId}</td>
+                  <td className="px-4 py-4 align-middle max-w-[260px]"><div className="truncate text-sm">{job.document}</div></td>
+                  <td className="px-4 py-4 align-middle max-w-[180px]"><div className="truncate text-sm">{job.printer}</div></td>
+                  <td className={`px-4 py-4 align-middle whitespace-nowrap ${statusColor[job.status] || "text-gray-600"}`}>{job.status}</td>
+                  <td className="px-4 py-4 align-middle">
+                    <button className="px-3 py-1 bg-sky-100 text-sky-700 rounded-lg text-xs hover:bg-sky-200 transition whitespace-nowrap">View Details</button>
                   </td>
                 </tr>
               ))

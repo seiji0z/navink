@@ -25,6 +25,8 @@ function PrintRequest() {
   const request = location.state;
 
   // --- New State ---
+  const [isOpen, setIsOpen] = useState(true);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [adminUser, setAdminUser] = useState(null);
@@ -214,16 +216,31 @@ function PrintRequest() {
 
   return (
     <div className="fade-in flex h-screen overflow-hidden bg-sky-100">
-      <AdminSidebar isOpen={true} setIsOpen={() => {}} />
+      <AdminSidebar 
+        isOpen={isOpen} 
+        setIsOpen={setIsOpen}
+        mobileOpen={mobileOpen}
+        setMobileOpen={setMobileOpen}
+      />
 
-      <main className="flex-1 p-8 overflow-hidden">
-        <div className="bg-white rounded-3xl shadow-md p-6 w-full h-full overflow-y-auto">
+      {/* Mobile Hamburger */}
+      <button
+        onClick={() => setMobileOpen(!mobileOpen)}
+        className="md:hidden fixed top-4 left-4 z-50 bg-white p-2 rounded-lg shadow-lg"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      <main className="flex-1 h-screen overflow-y-auto p-4 sm:p-6 lg:p-8">
+        <div className="bg-white rounded-3xl shadow-md p-4 sm:p-6 w-full">
           {/* Header */}
-          <div className="flex justify-between items-center mb-6 border-b pb-4">
-            <h1 className="text-2xl font-bold text-gray-800">Review Print Request</h1>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 border-b pb-4 gap-3">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-800 truncate">Review Print Request</h1>
             <button
               onClick={handleBack}
-              className="bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-medium px-4 py-2 rounded-lg transition shadow-sm"
+              className="bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-medium px-4 py-2 rounded-lg transition shadow-sm whitespace-nowrap"
             >
               Back
             </button>

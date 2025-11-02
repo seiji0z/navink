@@ -157,62 +157,94 @@ function PendingPrintRequestsCard() {
       ) : requests.length === 0 ? (
         <p className="text-gray-500 text-center">No pending print requests.</p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm text-gray-700">
-            <thead>
-              <tr className="border-b">
-                <th className="text-left py-2">Student</th>
-                <th className="text-left py-2">Document</th>
-                <th className="text-left py-2">Submitted</th>
-                <th className="text-left py-2">Status</th>
-                <th className="text-left py-2">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {requests.slice(0, 3).map((req, idx) => (
-                <tr key={idx} className="border-b last:border-none">
-                  <td className="py-3 flex items-center space-x-2">
-                    <img
-                      src={logo}
-                      alt="User"
-                      className="w-6 h-6 rounded-full"
-                    />
-                    <span>{req.student}</span>
-                  </td>
-                  <td>{req.document}</td>
-                  <td>{req.submitted}</td>
-                  <td>
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        statusColor[req.status]
-                      }`}
-                    >
-                      {req.status}
-                    </span>
-                  </td>
-                  <td className="space-x-2">
-                    <button
-                      onClick={() =>
-                        handleStatusUpdate(req.transactionId, "Approved", req.requestId)
-                      }
-                      className="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-xs hover:bg-green-200 transition"
-                    >
-                      Approve
-                    </button>
-                    <button
-                      onClick={() =>
-                        handleStatusUpdate(req.transactionId, "Declined", req.requestId)
-                      }
-                      className="px-3 py-1 bg-red-100 text-red-700 rounded-lg text-xs hover:bg-red-200 transition"
-                    >
-                      Deny
-                    </button>
-                  </td>
+        <>
+          {/* Mobile list (no horizontal scrolling) */}
+          <div className="md:hidden space-y-3">
+            {requests.slice(0, 3).map((req, idx) => (
+              <div key={idx} className="rounded-xl border border-gray-200 p-4">
+                <div className="flex items-start">
+                  <img src={logo} alt="User" className="w-9 h-9 rounded-full object-cover mr-3" />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between">
+                      <p className="font-medium text-gray-900 truncate pr-2">{req.student}</p>
+                      <span className={`ml-2 px-2.5 py-1 rounded-full text-[11px] font-medium whitespace-nowrap ${statusColor[req.status]}`}>
+                        {req.status}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-sm text-gray-700 truncate">{req.document}</p>
+                    <div className="mt-3 flex items-center justify-between text-xs text-gray-500">
+                      <span className="whitespace-nowrap">{req.submitted}</span>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleStatusUpdate(req.transactionId, "Approved", req.requestId)}
+                          className="px-2.5 py-1 bg-green-100 text-green-700 rounded-md hover:bg-green-200"
+                        >
+                          Approve
+                        </button>
+                        <button
+                          onClick={() => handleStatusUpdate(req.transactionId, "Declined", req.requestId)}
+                          className="px-2.5 py-1 bg-red-100 text-red-700 rounded-md hover:bg-red-200"
+                        >
+                          Deny
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop/tablet table */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="min-w-[720px] w-full text-sm text-gray-700 table-auto">
+              <thead>
+                <tr className="border-b">
+                  <th className="text-left px-4 py-3 text-xs text-gray-500 uppercase tracking-wide">Student</th>
+                  <th className="text-left px-4 py-3 text-xs text-gray-500 uppercase tracking-wide">Document</th>
+                  <th className="text-left px-4 py-3 text-xs text-gray-500 uppercase tracking-wide">Submitted</th>
+                  <th className="text-left px-4 py-3 text-xs text-gray-500 uppercase tracking-wide">Status</th>
+                  <th className="text-left px-4 py-3 text-xs text-gray-500 uppercase tracking-wide">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {requests.slice(0, 3).map((req, idx) => (
+                  <tr key={idx} className="border-b last:border-none">
+                    <td className="px-4 py-4 align-middle">
+                      <div className="flex items-center space-x-3">
+                        <img src={logo} alt="User" className="w-8 h-8 rounded-full object-cover" />
+                        <div className="min-w-0">
+                          <div className="text-sm font-medium text-gray-800 truncate max-w-[180px]">{req.student}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-4 align-middle max-w-[220px]"><div className="text-sm text-gray-700 truncate">{req.document}</div></td>
+                    <td className="px-4 py-4 align-middle whitespace-nowrap text-gray-500">{req.submitted}</td>
+                    <td className="px-4 py-4 align-middle">
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusColor[req.status]}`}>{req.status}</span>
+                    </td>
+                    <td className="px-4 py-4 align-middle">
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() => handleStatusUpdate(req.transactionId, "Approved", req.requestId)}
+                          className="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-xs hover:bg-green-200 transition"
+                        >
+                          Approve
+                        </button>
+                        <button
+                          onClick={() => handleStatusUpdate(req.transactionId, "Declined", req.requestId)}
+                          className="px-3 py-1 bg-red-100 text-red-700 rounded-lg text-xs hover:bg-red-200 transition"
+                        >
+                          Deny
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
     </div>
   );

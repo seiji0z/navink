@@ -6,6 +6,7 @@ import AuditLog from "../components/systemConfiguration/AuditLog";
 
 function Configuration() {
   const [isOpen, setIsOpen] = useState(true);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const auditLogs = [
     {
@@ -26,32 +27,35 @@ function Configuration() {
 
   return (
     <div className="fade-in flex h-screen bg-sky-100 overflow-hidden">
-      <AdminSidebar isOpen={isOpen} setIsOpen={setIsOpen} />
+      {/* Hamburger for mobile */}
+      <button
+        className="fixed top-4 left-4 z-50 md:hidden bg-white rounded-full shadow-lg px-4 py-2 flex items-center text-xl font-bold"
+        onClick={() => setMobileOpen(true)}
+        aria-label="Open sidebar"
+      >
+        ☰
+      </button>
+      <AdminSidebar isOpen={isOpen} setIsOpen={setIsOpen} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
       {/* Main Content */}
-      <main className="flex-1 p-8 flex flex-col">
+      <main className="flex-1 p-8 flex flex-col overflow-y-auto">
         {/* Page Title */}
         <h1 className="text-3xl font-bold text-gray-900 mb-6">
           System Configuration
         </h1>
 
-        {/* White Card */}
-        <div className="bg-white rounded-3xl p-6 shadow-md flex-1 overflow-y-auto flex flex-col">
-          {/* Print Details Component */}
-          <div className="mb-6">
-            <PrintDetailsSettings />
-          </div>
-
-          {/* Printer Management Component */}
-          <div className="mb-6">
-            <PrinterManagement />
-          </div>
-
-          {/* Audit Log Component */}
-          <div>
-            <AuditLog auditLogs={auditLogs} />
-          </div>
+        {/* Print Details Component */}
+        <div className="mb-6">
+          <PrintDetailsSettings />
         </div>
+
+        {/* Printer Management Component */}
+        <div className="mb-6">
+          <PrinterManagement />
+        </div>
+
+        {/* Audit Log Component */}
+        <AuditLog auditLogs={auditLogs} />
       </main>
     </div>
   );

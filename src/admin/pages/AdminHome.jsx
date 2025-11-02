@@ -8,14 +8,30 @@ import PrintQueueCard from "../components/dashboard/PrintQueueCard";
 
 function AdminHome() {
   const [isOpen, setIsOpen] = useState(true);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="fade-in flex min-h-screen bg-sky-100">
-      {/* Sidebar */}
-      <AdminSidebar isOpen={isOpen} setIsOpen={setIsOpen} />
+    <div className="fade-in flex h-screen bg-sky-100 overflow-hidden">
+      {/* Mobile hamburger button (phones only) */}
+      <button
+        aria-label="Open sidebar"
+        className="md:hidden fixed top-4 left-4 z-50 bg-white/90 text-sky-600 rounded-md p-2 shadow-md"
+        onClick={() => setMobileOpen(true)}
+      >
+        {/* Placeholder hamburger icon (replace with asset later) */}
+        <span className="text-xl">☰</span>
+      </button>
+
+      {/* Sidebar (desktop and mobile overlay handled inside AdminSidebar) */}
+      <AdminSidebar
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        mobileOpen={mobileOpen}
+        setMobileOpen={setMobileOpen}
+      />
 
       {/* Main Content */}
-      <main className="flex-1 p-8 flex flex-col relative overflow-hidden">
+      <main className="flex-1 p-8 flex flex-col relative overflow-y-auto">
         {/* Welcome Header */}
         <div className="mb-8">
           <h2

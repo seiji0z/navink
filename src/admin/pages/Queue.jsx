@@ -7,6 +7,7 @@ import QueueTable from "../components/printQueue/QueueTable";
 
 function Queue() {
   const [isOpen, setIsOpen] = useState(true);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [jobs, setJobs] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [stats, setStats] = useState([]);
@@ -132,25 +133,31 @@ function Queue() {
 
   return (
     <div className="fade-in flex h-screen bg-sky-100 overflow-hidden">
-      <AdminSidebar isOpen={isOpen} setIsOpen={setIsOpen} />
+      {/* Hamburger for mobile */}
+      <button
+        className="fixed top-4 left-4 z-50 md:hidden bg-white rounded-full shadow-lg px-4 py-2 flex items-center text-xl font-bold"
+        onClick={() => setMobileOpen(true)}
+        aria-label="Open sidebar"
+      >
+        ☰
+      </button>
+      <AdminSidebar isOpen={isOpen} setIsOpen={setIsOpen} mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 
-      <main className="flex-1 p-8 flex flex-col">
+      <main className="flex-1 p-8 flex flex-col overflow-y-auto">
         <h1 className="text-3xl font-bold text-gray-900 mb-6">
           Print Queue Control
         </h1>
 
-        <div className="bg-white rounded-3xl p-6 shadow-md flex-1 overflow-y-auto flex flex-col pb-4">
-          <QueueFilter
-            onSearchChange={handleSearchChange}
-            onFilterChange={handleFilterChange}
-            onClear={handleClearFilters}
-          />
+        <QueueFilter
+          onSearchChange={handleSearchChange}
+          onFilterChange={handleFilterChange}
+          onClear={handleClearFilters}
+        />
 
-          <QueueStats stats={stats} />
+        <QueueStats stats={stats} />
 
-          {/* ✅ Table with actions */}
-          <QueueTable jobs={filteredJobs} onStatusUpdate={handleStatusUpdate} />
-        </div>
+        {/* ✅ Table with actions */}
+        <QueueTable jobs={filteredJobs} onStatusUpdate={handleStatusUpdate} />
       </main>
     </div>
   );

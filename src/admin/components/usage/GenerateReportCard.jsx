@@ -34,7 +34,7 @@ function GenerateReportCard({ onGenerate }) {
   }
 
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl p-6">
+    <div className="bg-white rounded-3xl p-6 shadow-md mb-6">
       <h2 className="text-lg font-semibold text-gray-700 mb-4">Generate New Report</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -150,10 +150,10 @@ function GenerateReportCard({ onGenerate }) {
         </div>
       </div>
 
-      <div className="flex justify-end">
+      <div className="flex flex-col sm:flex-row justify-end gap-3">
         <button
           onClick={handleGenerate}
-          className="bg-sky-600 hover:bg-sky-700 text-white font-medium px-6 py-2.5 rounded-lg transition shadow-sm"
+          className="w-full sm:w-auto bg-sky-600 hover:bg-sky-700 text-white font-medium px-6 py-2.5 rounded-lg transition shadow-sm"
         >
           Generate Report
         </button>
