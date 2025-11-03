@@ -63,7 +63,7 @@ function PrintHistory() {
   }, []);
 
   return (
-    <div className="bg-white rounded-xl p-6 shadow col-span-2 h-full flex flex-col">
+    <div className="bg-white rounded-3xl p-6 shadow-md col-span-1 lg:col-span-2 h-full flex flex-col">
       {/* Header section */}
       <div className="flex justify-between items-start mb-6 shrink-0">
         <h3
@@ -84,37 +84,64 @@ function PrintHistory() {
         </div>
       </div>
 
-      {/* Scrollable table */}
-      <div className="overflow-y-auto max-h-60 flex-1">
+      {/* Desktop table */}
+      <div className="hidden md:block overflow-x-auto flex-1">
         {loading ? (
           <p className="text-gray-400 text-center">Loading print history...</p>
         ) : printHistory.length === 0 ? (
           <p className="text-gray-400 text-sm text-center italic py-4">No print history found.</p>
         ) : (
-          <table className="w-full text-left text-sm">
+          <table className="min-w-[720px] w-full text-left text-sm">
             <thead className="sticky top-0 bg-white">
               <tr className="text-gray-500 border-b">
-                <th className="pb-2">File ID</th>
-                <th className="pb-2">File Name</th>
-                <th className="pb-2">Status</th>
-                <th className="pb-2">No. of Pages</th>
-                <th className="pb-2">Token</th>
+                <th className="pb-2 pr-2">File ID</th>
+                <th className="pb-2 pr-2">File Name</th>
+                <th className="pb-2 pr-2">Status</th>
+                <th className="pb-2 pr-2">No. of Pages</th>
+                <th className="pb-2 pr-2">Token</th>
               </tr>
             </thead>
             <tbody className="text-gray-700">
               {printHistory.map((file) => (
-                <tr key={file.id} className="border-t">
-                  <td>{file.id}</td>
-                  <td>{file.name}</td>
-                  <td className={statusColors[file.status] || "text-gray-500"}>
+                <tr key={file.id} className="border-t hover:bg-gray-50">
+                  <td className="py-2 pr-2 whitespace-nowrap">{file.id}</td>
+                  <td className="py-2 pr-2 max-w-[240px]"><div className="truncate" title={file.name}>{file.name}</div></td>
+                  <td className={`py-2 pr-2 ${statusColors[file.status] || "text-gray-500"}`}>
                     {file.status}
                   </td>
-                  <td>{file.pages}</td>
-                  <td>{file.tokens}</td>
+                  <td className="py-2 pr-2">{file.pages}</td>
+                  <td className="py-2 pr-2">{file.tokens}</td>
                 </tr>
               ))}
             </tbody>
           </table>
+        )}
+      </div>
+
+      {/* Mobile list */}
+      <div className="md:hidden flex-1 overflow-y-auto flex flex-col gap-3">
+        {loading ? (
+          <p className="text-gray-400 text-center">Loading print history...</p>
+        ) : printHistory.length === 0 ? (
+          <p className="text-gray-400 text-sm text-center italic py-4">No print history found.</p>
+        ) : (
+          printHistory.map((file) => (
+            <div key={file.id} className="border rounded-xl p-4 bg-white">
+              <div className="flex items-start justify-between gap-3 mb-1">
+                <div className="min-w-0">
+                  <p className="font-medium truncate" title={file.name}>{file.name}</p>
+                  <p className="text-xs text-gray-500">ID: {file.id}</p>
+                </div>
+                <span className={`text-xs font-semibold ${statusColors[file.status] || "text-gray-500"}`}>
+                  {file.status}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-sm text-gray-700">
+                <span>Pages: {file.pages}</span>
+                <span>Tokens: {file.tokens}</span>
+              </div>
+            </div>
+          ))
         )}
       </div>
     </div>

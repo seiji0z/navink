@@ -105,14 +105,14 @@ function Notifications() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-3xl p-6 shadow flex flex-col items-center justify-center h-60">
+      <div className="bg-white rounded-3xl p-6 shadow-md flex flex-col items-center justify-center h-60">
         <p className="text-gray-500 text-sm italic">Loading notifications...</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-3xl p-6 shadow flex flex-col gap-4">
+    <div className="bg-white rounded-3xl p-6 shadow-md flex flex-col gap-4">
       <h3
         className="text-xl font-medium text-gray-600"
         style={{ fontFamily: "Poppins-SemiBold, sans-serif" }}

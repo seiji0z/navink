@@ -8,7 +8,7 @@ import historyIcon from "../assets/icons/history-icon.png";
 import logo from "../assets/images/navink-logo.png";
 import { supabase } from "../supabaseClient";
 
-function Sidebar({ isOpen, setIsOpen }) {
+function Sidebar({ isOpen, setIsOpen, mobileOpen = false, setMobileOpen = () => {} }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -80,16 +80,26 @@ function Sidebar({ isOpen, setIsOpen }) {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <aside
-      className={`relative text-white h-screen p-6 flex flex-col justify-between transition-all duration-300 bg-navi ${
-        isOpen ? "w-64" : "w-20"
-      }`}
-      style={{
-        borderTopRightRadius: "50px",
-        borderBottomRightRadius: "50px",
-        fontFamily: "Poppins-Regular, sans-serif",
-      }}
-    >
+    <>
+      {/* Mobile Backdrop */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 bg-black/30 z-30 md:hidden"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      <aside
+        className={`text-white h-screen p-6 flex flex-col justify-between transition-all duration-300 bg-navi 
+        fixed top-0 left-0 z-40 transform md:relative md:translate-x-0 
+        ${mobileOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0
+        ${isOpen ? "md:w-64" : "md:w-20"} w-64`}
+        style={{
+          borderTopRightRadius: "50px",
+          borderBottomRightRadius: "50px",
+          fontFamily: "Poppins-Regular, sans-serif",
+        }}
+      >
       {/* Top Section */}
       <div>
         <div className="flex items-center mb-8">
@@ -222,14 +232,15 @@ function Sidebar({ isOpen, setIsOpen }) {
         )}
       </div>
 
-      {/* Collapse Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="absolute top-1/2 right-[-12px] transform -translate-y-1/2 bg-white text-[#1F6D8B] rounded-full w-6 h-6 flex items-center justify-center shadow-md hover:bg-sky-100"
-      >
-        {isOpen ? "<" : ">"}
-      </button>
-    </aside>
+        {/* Collapse Button (desktop only) */}
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="hidden md:flex absolute top-1/2 right-[-12px] transform -translate-y-1/2 bg-white text-[#1F6D8B] rounded-full w-6 h-6 items-center justify-center shadow-md hover:bg-sky-100"
+        >
+          {isOpen ? "<" : ">"}
+        </button>
+      </aside>
+    </>
   );
 }
 

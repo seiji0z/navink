@@ -110,14 +110,14 @@ function CurrentQueues() {
 
   if (loading) {
     return (
-      <div className="col-span-2 bg-white rounded-3xl p-6 shadow h-full flex justify-center items-center">
+      <div className="col-span-1 lg:col-span-2 bg-white rounded-3xl p-6 shadow-md h-full flex justify-center items-center">
         <p className="text-gray-500">Loading queues...</p>
       </div>
     );
   }
 
   return (
-    <div className="col-span-2 bg-white rounded-3xl p-6 shadow h-full flex flex-col">
+    <div className="col-span-1 lg:col-span-2 bg-white rounded-3xl p-6 shadow-md h-full flex flex-col">
       <h3
         className="text-xl font-medium text-gray-500 mb-4 shrink-0"
         style={{ fontFamily: "Poppins-SemiBold, sans-serif" }}
@@ -137,31 +137,32 @@ function CurrentQueues() {
               return (
                 <li
                   key={queue.id}
-                  className="flex items-center justify-between border-2 rounded-xl border-[#1F6D8B] p-2 gap-4"
+                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-2 rounded-xl border-[#1F6D8B] p-3 gap-3"
                 >
-                  <div className="flex items-center gap-2">
-                    <img src={fileQueueIcon} alt="" className="h-10 w-auto p-1" />
-                    <div>
-                      <p className="font-medium">{queue.name}</p>
-                      <p className="text-sm text-gray-500">{queue.details}</p>
+                  <div className="flex items-start gap-2 min-w-0">
+                    <img src={fileQueueIcon} alt="" className="h-10 w-10 p-1 flex-shrink-0" />
+                    <div className="min-w-0">
+                      <p className="font-medium truncate" title={queue.name}>{queue.name}</p>
+                      <p className="text-sm text-gray-500 truncate" title={queue.details}>{queue.details}</p>
                     </div>
                   </div>
 
-                  <div className="text-green-500 font-semibold">
-                    {queue.tokens} Tokens
-                  </div>
-                  <div className="font-normal">{queue.position}</div>
-
-                  <div
-                    className="flex text-sm px-2 py-1 text-black rounded-lg items-center justify-center gap-2 w-[110px]"
-                    style={{ backgroundColor: style.bg }}
-                  >
-                    <img
-                      src={style.icon}
-                      alt={`${queue.status} icon`}
-                      className="h-4"
-                    />
-                    <p>{queue.status}</p>
+                  <div className="flex items-center justify-between sm:justify-end gap-3">
+                    <div className="text-green-600 font-semibold whitespace-nowrap">
+                      {queue.tokens} Tokens
+                    </div>
+                    <div className="text-gray-700 whitespace-nowrap">{queue.position}</div>
+                    <div
+                      className="flex text-sm px-2 py-1 text-black rounded-lg items-center justify-center gap-2 w-[120px]"
+                      style={{ backgroundColor: style.bg }}
+                    >
+                      <img
+                        src={style.icon}
+                        alt={`${queue.status} icon`}
+                        className="h-4"
+                      />
+                      <p className="truncate">{queue.status}</p>
+                    </div>
                   </div>
                 </li>
               );

@@ -5,7 +5,7 @@ function PoliciesCard() {
   const navigate = useNavigate();
 
   return (
-    <div className="h-100 bg-white rounded-xl p-6 shadow col-span-2">
+    <div className="bg-white rounded-3xl p-6 shadow-md col-span-1 lg:col-span-2">
       <h3 className="text-xl font-medium text-gray-500 mb-4"
       style={{ fontFamily: "Poppins-SemiBold, sans-serif" }}
       >
