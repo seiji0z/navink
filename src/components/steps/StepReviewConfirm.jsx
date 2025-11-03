@@ -70,15 +70,20 @@ const StepReviewConfirm = ({ onBack, onNext, data, user, student: initialStudent
   };
 
   return (
-    <div className="p-6 bg-white rounded-2xl shadow-md max-w-5xl mx-auto space-y-6">
-      <h2 className="text-xl font-semibold text-gray-800 border-b pb-2">
+    <div className="p-4 sm:p-6 bg-white rounded-2xl shadow-md max-w-5xl mx-auto space-y-6">
+      <h2 className="text-lg sm:text-xl font-semibold text-gray-800 border-b pb-2">
         Review Print Details
       </h2>
 
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Left: Summary Info */}
-        <div className="space-y-2 text-gray-700">
-          <p><strong>File:</strong> {data?.file?.name || "No file selected"}</p>
+        <div className="space-y-2 text-gray-700 min-w-0">
+          <p className="min-w-0">
+            <strong>File:</strong>{" "}
+            <span className="inline-block max-w-full truncate align-bottom" title={data?.file?.name || "No file selected"}>
+              {data?.file?.name || "No file selected"}
+            </span>
+          </p>
           <p><strong>Copies:</strong> {data.copies || 1}</p>
           <p><strong>Total Pages:</strong> {data.totalPages || 1}</p>
           <p><strong>Paper Size:</strong> {data.paperSize}</p>
@@ -172,7 +177,7 @@ const StepReviewConfirm = ({ onBack, onNext, data, user, student: initialStudent
                       className={`${
                         data.colorMode === "Black & White" ? "grayscale" : ""
                       }`}
-                      width={350}
+                      width={320}
                     />
                   </div>
                 ))}
@@ -187,17 +192,17 @@ const StepReviewConfirm = ({ onBack, onNext, data, user, student: initialStudent
       </div>
 
       {/* Bottom Buttons */}
-      <div className="flex justify-between mt-6">
+      <div className="flex flex-col sm:flex-row justify-between gap-3 mt-6">
         <button
           onClick={onBack}
-          className="px-6 py-2 rounded-lg bg-gray-300 hover:bg-gray-400 transition"
+          className="w-full sm:w-auto px-6 py-2 rounded-lg bg-gray-300 hover:bg-gray-400 transition"
         >
           Back
         </button>
 
         <button
           onClick={handleNext}
-          className="px-6 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white transition"
+          className="w-full sm:w-auto px-6 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white transition"
           disabled={remainingTokens !== null && remainingTokens < 0}
         >
           Continue

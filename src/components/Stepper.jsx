@@ -2,7 +2,7 @@ import React from "react";
 
 const Stepper = ({ steps, currentStep }) => {
   return (
-    <div className="flex justify-between max-w-3xl mx-auto relative">
+    <div className="flex justify-between max-w-3xl md:max-w-4xl lg:max-w-5xl mx-auto relative px-2 sm:px-4">
       {steps.map((label, index) => {
         const stepNum = index + 1;
         const isActive = stepNum <= currentStep;
@@ -19,7 +19,7 @@ const Stepper = ({ steps, currentStep }) => {
 
             {/* Step Label */}
             <span
-              className={`mt-2 text-sm font-medium text-center ${
+              className={`mt-2 text-xs sm:text-sm font-medium text-center ${
                 isActive ? "text-sky-600" : "text-gray-500"
               }`}
             >

@@ -9,6 +9,7 @@ import { supabase } from "../supabaseClient";
 
 export default function PrintFiles() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [printData, setPrintData] = useState({});
   const [user, setUser] = useState(null);
@@ -123,13 +124,32 @@ export default function PrintFiles() {
   };
 
   return (
-    <div className="fade-in flex min-h-screen bg-sky-100">
-<Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
-<main className="flex-1 p-6 flex flex-col relative overflow-y-auto">
-        <h2 className="text-2xl font-semibold text-navi mb-4">Print Files</h2>
-        <div>
-          <Stepper steps={steps} currentStep={currentStep} />
-          <div className="mt-10">{renderStep()}</div>
+    <div className="fade-in flex h-screen bg-sky-100 overflow-hidden">
+      <Sidebar 
+        isOpen={isSidebarOpen} 
+        setIsOpen={setIsSidebarOpen}
+        mobileOpen={mobileOpen}
+        setMobileOpen={setMobileOpen}
+      />
+
+      {/* Mobile Hamburger */}
+      <button
+        onClick={() => setMobileOpen(!mobileOpen)}
+        className="md:hidden fixed top-4 left-4 z-50 bg-white p-2 rounded-lg shadow-lg"
+        aria-label="Open sidebar"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      <main className="flex-1 h-screen overflow-y-auto p-4 sm:p-6 lg:p-8 flex flex-col relative">
+        <h2 className="text-2xl sm:text-3xl font-semibold text-navi mb-4 sm:mb-6 truncate">Print Files</h2>
+        <div className="flex flex-col gap-6">
+          <div className="my-4 sm:my-6">
+            <Stepper steps={steps} currentStep={currentStep} />
+          </div>
+          <div className="mt-2 sm:mt-4">{renderStep()}</div>
         </div>
       </main>
     </div>

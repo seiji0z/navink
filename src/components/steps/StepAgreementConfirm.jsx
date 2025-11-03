@@ -164,8 +164,8 @@ const StepAgreementConfirm = ({ onBack, onFinish, data, user, student, setStuden
   };
 
   return (
-    <div className="p-6 bg-white rounded-2xl shadow-md max-w-5xl mx-auto space-y-6">
-      <h2 className="text-xl font-semibold text-gray-800 border-b pb-2">
+    <div className="p-4 sm:p-6 bg-white rounded-2xl shadow-md max-w-5xl mx-auto space-y-6">
+      <h2 className="text-lg sm:text-xl font-semibold text-gray-800 border-b pb-2">
         Printing Agreement & Confirmation
       </h2>
 
@@ -203,10 +203,10 @@ const StepAgreementConfirm = ({ onBack, onFinish, data, user, student, setStuden
 
       {error && <p className="text-red-600 text-sm">{error}</p>}
 
-      <div className="flex justify-between mt-6">
+      <div className="flex flex-col sm:flex-row justify-between gap-3 mt-6">
         <button
           onClick={onBack}
-          className="px-6 py-2 rounded-lg bg-gray-300 hover:bg-gray-400 transition"
+          className="w-full sm:w-auto px-6 py-2 rounded-lg bg-gray-300 hover:bg-gray-400 transition"
         >
           Back
         </button>
@@ -214,7 +214,7 @@ const StepAgreementConfirm = ({ onBack, onFinish, data, user, student, setStuden
         <button
           onClick={handleSubmitPrint}
           disabled={!agreed || processing}
-          className={`px-6 py-2 rounded-lg text-white transition ${
+          className={`w-full sm:w-auto px-6 py-2 rounded-lg text-white transition ${
             agreed ? "bg-sky-600 hover:bg-sky-700" : "bg-gray-400 cursor-not-allowed"
           }`}
         >
