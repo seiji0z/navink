@@ -32,7 +32,7 @@ function PrintHistory() {
             file_name,
             num_pages,
             student_id,
-            print_transaction (
+            print_transaction!request_id (  
               tokens_deducted,
               status
             )

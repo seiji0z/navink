@@ -63,7 +63,7 @@ function Notifications() {
             datetime_approved,
             datetime_printed,
             datetime_collected,
-            print_request (
+            print_request!request_id (
               file_name,
               datetime_requested,
               printer_id,

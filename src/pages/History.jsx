@@ -40,7 +40,7 @@ function HistoryPage() {
             status,
             tokens_deducted,
             datetime_approved,
-            print_request (
+            print_request!request_id (
               file_name,
               num_pages,
               num_copies,
